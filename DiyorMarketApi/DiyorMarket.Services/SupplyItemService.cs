@@ -1,6 +1,4 @@
 ﻿using AutoMapper;
-using DiyorMarket.Domain.DTOs.SaleItem;
-using DiyorMarket.Domain.DTOs.Supplier;
 using DiyorMarket.Domain.DTOs.SupplyItem;
 using DiyorMarket.Domain.Entities;
 using DiyorMarket.Domain.Interfaces.Services;
@@ -8,8 +6,6 @@ using DiyorMarket.Domain.Pagniation;
 using DiyorMarket.Domain.ResourceParameters;
 using DiyorMarket.Domain.Responses;
 using DiyorMarket.Infrastructure.Persistence;
-using Microsoft.Extensions.Logging;
-using System.Data.Common;
 
 namespace DiyorMarket.Services
 {
@@ -74,7 +70,7 @@ namespace DiyorMarket.Services
 
             var supplyItemDtos = _mapper.Map<List<SupplyItemDto>>(supplyItems);
 
-            var paginatedResult =  new PaginatedList<SupplyItemDto>(supplyItemDtos, supplyItems.TotalCount, supplyItems.CurrentPage, supplyItems.PageSize);
+            var paginatedResult = new PaginatedList<SupplyItemDto>(supplyItemDtos, supplyItems.TotalCount, supplyItems.CurrentPage, supplyItems.PageSize);
 
             var result = new GetSupplyItemResponse()
             {

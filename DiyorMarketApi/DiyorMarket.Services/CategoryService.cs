@@ -42,7 +42,7 @@ namespace DiyorMarket.Services
             }
 
             var categories = query.ToPaginatedList(categoryResourceParameters.PageSize, categoryResourceParameters.PageNumber);
-            // var products = query.ToList();
+
             var categoryDtos = _mapper.Map<List<CategoryDto>>(categories);
             var paginatedResult = new PaginatedList<CategoryDto>(categoryDtos, categories.TotalCount, categories.CurrentPage, categories.PageSize);
 

@@ -6,8 +6,6 @@ using DiyorMarket.Domain.Pagniation;
 using DiyorMarket.Domain.ResourceParameters;
 using DiyorMarket.Domain.Responses;
 using DiyorMarket.Infrastructure.Persistence;
-using DiyorMarket.ResourceParameters;
-using Microsoft.EntityFrameworkCore.Internal;
 
 namespace DiyorMarket.Services
 {
@@ -47,7 +45,7 @@ namespace DiyorMarket.Services
 
             var saleDtos = _mapper.Map<List<SaleDto>>(sales);
 
-            var paginatedResult =  new PaginatedList<SaleDto>(saleDtos, sales.TotalCount, sales.CurrentPage, sales.PageSize);
+            var paginatedResult = new PaginatedList<SaleDto>(saleDtos, sales.TotalCount, sales.CurrentPage, sales.PageSize);
 
             var result = new GetSaleResponse()
             {

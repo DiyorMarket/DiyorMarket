@@ -6,7 +6,6 @@ using DiyorMarket.Domain.Pagniation;
 using DiyorMarket.Domain.Responses;
 using DiyorMarket.Infrastructure.Persistence;
 using DiyorMarket.ResourceParameters;
-using Microsoft.Extensions.Logging;
 
 namespace DiyorMarket.Services
 {
