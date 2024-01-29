@@ -16,4 +16,5 @@ namespace Lesson11.Models
 
         public virtual ICollection<SaleItem> SaleItems { get; set; }
     }
+    
 }
