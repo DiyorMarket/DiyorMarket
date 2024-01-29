@@ -14,6 +14,7 @@ namespace DiyorMarket.Controllers
         public InformationsController(DiyorMarketDbContext context)
         {
             _context = context;
+            //dsd
         }
 
         [HttpGet("Categories")]
