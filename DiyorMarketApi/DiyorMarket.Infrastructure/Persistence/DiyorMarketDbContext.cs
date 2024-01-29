@@ -23,7 +23,7 @@ namespace DiyorMarket.Infrastructure.Persistence
         public DiyorMarketDbContext(DbContextOptions<DiyorMarketDbContext> options)
             : base(options)
         {
-            Database.Migrate();
+            //Database.Migrate();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

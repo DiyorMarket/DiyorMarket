@@ -1,4 +1,6 @@
 using Lesson11.Stores.Categories;
+using Lesson11.Stores.Informations;
+using Lesson11.Stores.Products;
 
 namespace Lesson11
 {
@@ -12,6 +14,8 @@ namespace Lesson11
             builder.Services.AddControllersWithViews();
 
             builder.Services.AddScoped<ICategoryDataStore, CategoryDataStore>();
+            builder.Services.AddScoped<IProductDataStore, ProductDataStore>();
+            builder.Services.AddScoped<IInformationDataStore, InformationDataStore>();
             Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("Mgo+DSMBMAY9C3t2VlhhQlJCfV5AQmBIYVp/TGpJfl96cVxMZVVBJAtUQF1hSn9Sd0xjWHpacHFdRGNY");
 
             var app = builder.Build();
@@ -33,7 +37,7 @@ namespace Lesson11
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=Dashboard}/{action=Index}/{id?}");
 
             app.Run();
         }
