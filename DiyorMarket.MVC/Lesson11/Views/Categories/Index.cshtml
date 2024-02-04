@@ -8,7 +8,7 @@
     <div class="d-flex justify-content-between">
         <div class="align-self-end mb-3">
             <a class="btn btn-success " asp-action="Create">
-                Create Category
+                Create
             </a>
         </div>
     </div>
@@ -17,8 +17,11 @@
         <ejs-grid id="categories-list"
                   dataSource="@ViewBag.Categories"
                   gridLines="Vertical"
-                  allowSorting="true">
-            <e-grid-pagesettings pageSize="10"></e-grid-pagesettings>
+                  allowSorting="true"
+                  allowPaging="true">
+            <e-grid-pagesettings pageSize="15"></e-grid-pagesettings>
+            <e-grid-pageSettings pageCount="@ViewBag.PageCount"></e-grid-pageSettings>
+            <e-grid-pageSettings currentPage="@ViewBag.PageCount"></e-grid-pageSettings>
             <e-grid-columns>
                 <e-grid-column headerText="Id" field="Id" typeof="text"></e-grid-column>
                 <e-grid-column headerText="Category Name" field="Name" typeof="text"></e-grid-column>

@@ -1,4 +1,5 @@
-﻿using Lesson11.Stores.Categories;
+﻿using Lesson11.Models;
+using Lesson11.Stores.Categories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Lesson11.Controllers
@@ -20,5 +21,23 @@ namespace Lesson11.Controllers
 
             return View();
           }
+
+        public ActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]        
+        
+        public ActionResult<Category> Create(Category category)
+        {
+
+            if(category != null)
+            {
+                _categoryDataStore.CreateCategory(category);
+                return RedirectToAction(nameof(Index));
+            }
+            return View();
+        }
     }
 }
