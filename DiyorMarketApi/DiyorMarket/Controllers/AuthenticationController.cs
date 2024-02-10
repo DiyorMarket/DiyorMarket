@@ -29,6 +29,11 @@ namespace DiyorMarket.Controllers
                 return Unauthorized();
             }
 
+            if(!FindUser(request.Login, request.Password))
+            {
+                return Unauthorized();
+            }
+
             var securityKey = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes("anvarSekretKalitSozMalades"));
             var signingCredentials = new SigningCredentials(securityKey, 
@@ -65,7 +70,7 @@ namespace DiyorMarket.Controllers
             {
                 Login = request.Login,
                 Password = request.Password,
-                Name = request.Name,
+                Name = request.FullName,
                 Phone = request.Phone
             };
 
@@ -95,7 +100,19 @@ namespace DiyorMarket.Controllers
 
             return Ok(token);
         }
-        
+
+        private bool FindUser(string login, string password)
+        {
+            var user = _context.Users.FirstOrDefault(u => u.Login == login);
+
+            if (user is null || user.Password != password)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
         private User FindUser(string login)
         {
             return _context.Users.FirstOrDefault(u => u.Login == login);
