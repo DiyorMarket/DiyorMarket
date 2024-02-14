@@ -55,6 +55,7 @@ public class DashboardService : IDashboardService
         return new Summary(total, salesCount, suppliesCount);
     }
 
+
     private IEnumerable<SpliteChartData> GetSpliteChartData()
     {
         var startDate = DateTime.Now.AddYears(-1);
