@@ -1,15 +1,13 @@
 ﻿
-<div class="container mt-18">
-    <form asp-controller="Products" asp-action="Index" class="mb-2">
+<div class="container">
+    <form asp-controller="Products" asp-action="Index">
         <input type="hidden" name="prevCategoryId" value="@ViewBag.SelectedCategory?.Id" />
         <div class="container">
-            <div class="row row-cols-sm-1 align-items-center">
+            <div class="row row-cols-sm-1 align-items-start">
                 <div class="d-flex flex-row justify-content-center gap-4">
                     <!-- Search -->
-                    <form asp-controller="Products" asp-action="Index">
                         <div class="col-md-5 mb-4 ml-12 mr-10">
                             <div class="input-group">
-                                <input type="hidden" name="prevCategoryId" value="@ViewBag.SelectedCategory?.Id" />
                                 <input type="text" class="form-control" placeholder="Search product..." name="searchString" value="@ViewBag.SearchString">
                                 <div class="input-group-append">
                                     <button type="submit" class="btn btn-primary">
@@ -18,9 +16,8 @@
                                 </div>
                             </div>
                         </div>
-                    </form>
                     <!-- Filter -->
-                    <div class="col-md-3 mb-3 ml-4">
+                    <div class="col-md-3 mb-3 ml-4 mr-10" style="width: 300px">
                         <div class="input-group">
                             <select class="form-control" name="categoryId">
                                 <option value="" selected disabled>@ViewBag.SelectedCategory.Name</option>
@@ -49,6 +46,7 @@
             </div>
         </div>
     </form>
+</div>
 
 
 
