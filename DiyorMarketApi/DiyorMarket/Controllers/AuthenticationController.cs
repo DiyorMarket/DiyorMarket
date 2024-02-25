@@ -1,12 +1,13 @@
 ﻿using DiyorMarket.Domain.Entities;
 using DiyorMarket.Infrastructure.Persistence;
-using DiyorMarket.LoginModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using DiyorMarket.Domain.DTOs.Login;
+using DiyorMarket.Domain.DTOs.Registration;
 
 namespace DiyorMarket.Controllers
 {
@@ -21,7 +22,7 @@ namespace DiyorMarket.Controllers
         }
 
         [HttpPost("login")]
-        public ActionResult<string> Login(LoginRequest request)
+        public ActionResult<string> Login(LoginRequestDto request)
         {
             var user = Authenticate(request.Login, request.Password);
 
@@ -55,11 +56,11 @@ namespace DiyorMarket.Controllers
             var token = new JwtSecurityTokenHandler()
                 .WriteToken(jwtSecurityToken);
 
-            return Ok(token);
+            return Ok(new LoginResponseDto(token));
         }
 
         [HttpPost("register")]
-        public ActionResult Register(RegisterRequest request)
+        public ActionResult Register(RegisterRequestDto request)
         {
             var existingUser = FindUser(request.Login);
             if (existingUser != null)
