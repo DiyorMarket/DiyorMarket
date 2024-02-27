@@ -77,30 +77,49 @@ namespace DiyorMarketApi.Controllers
             var dataTable = GetProductsDataTable(products);
 
             // Создание PDF-документа
-            using PdfDocument pdf = new PdfDocument();
-            PdfPage page = pdf.AddPage();
-            XGraphics gfx = XGraphics.FromPdfPage(page);
-            XFont font = new XFont("Arial", 12, XFontStyle.Regular);
-
-            // Начало новой страницы PDF
-            gfx.DrawString("Продукты PDF", font, XBrushes.Black, new XRect(0, 0, page.Width.Point, page.Height.Point), XStringFormats.TopCenter);
-
-            // Добавление данных о продуктах в PDF
-            int yPosition = 40;
-            foreach (DataRow row in dataTable.Rows)
+            using (PdfDocument pdf = new PdfDocument())
             {
-                string productInfo = $"Id: {row["Id"]}, Name: {row["Name"]}, Description: {row["Description"]}, SalePrice: {row["SalePrice"]}, SupplyPrice: {row["SupplyPrice"]}, ExpireDate: {row["ExpireDate"]}, CategoryName: {(row["CategoryName"] != DBNull.Value ? row["CategoryName"] : "")}";
-                gfx.DrawString(productInfo, font, XBrushes.Black, new XRect(0, yPosition, page.Width.Point, page.Height.Point), XStringFormats.TopLeft);
-                yPosition += 20;
+                PdfPage page = pdf.AddPage();
+                XGraphics gfx = XGraphics.FromPdfPage(page);
+                XFont font = new XFont("Arial", 12, XFontStyle.Regular);
+
+                // Начало новой страницы PDF
+                gfx.DrawString("Products PDF", font, XBrushes.Black, new XRect(0, 0, page.Width.Point, page.Height.Point), XStringFormats.TopCenter);
+
+                // Добавление данных о продуктах в PDF
+                int yPosition = 40; // Начальная позиция Y
+                foreach (DataRow row in dataTable.Rows)
+                {
+                    string productInfo = $"Id: {row["Id"]}, Name: {row["Name"]}, Description: {row["Description"]}, SalePrice: {row["SalePrice"]}, SupplyPrice: {row["SupplyPrice"]}, ExpireDate: {row["ExpireDate"]}, CategoryName: {(row["CategoryName"] != DBNull.Value ? row["CategoryName"] : "")}";
+
+                    // Проверяем, поместится ли информация о продукте на текущей странице
+                    var size = gfx.MeasureString(productInfo, font);
+                    if (yPosition + size.Height > page.Height.Point - 40)
+                    {
+                        // Если не помещается, добавляем новую страницу
+                        page = pdf.AddPage();
+                        gfx = XGraphics.FromPdfPage(page);
+                        yPosition = 40; // Сбросить позицию Y
+
+                        // Начать новую страницу с заголовком
+                        gfx.DrawString("Products PDF", font, XBrushes.Black, new XRect(0, 0, page.Width.Point, page.Height.Point), XStringFormats.TopCenter);
+                    }
+
+                    // Отрисовка информации о продукте
+                    gfx.DrawString(productInfo, font, XBrushes.Black, new XRect(40, yPosition, page.Width.Point - 80, page.Height.Point), XStringFormats.TopLeft);
+                    yPosition += (int)size.Height + 5; // Учитываем небольшой интервал между строками
+                }
+
+                // Сохранение PDF в MemoryStream и отправка его как файл ответа
+                using (MemoryStream pdfStream = new MemoryStream())
+                {
+                    pdf.Save(pdfStream, false);
+
+                    // Возврат PDF-файла
+                    return File(pdfStream.ToArray(), "application/pdf", "Products.pdf");
+                }
             }
-
-            // Сохранение PDF в MemoryStream и отправка его как файл ответа
-            using MemoryStream pdfStream = new MemoryStream();
-            pdf.Save(pdfStream, false);
-
-            // Возврат PDF-файла
-            return File(pdfStream.ToArray(), "application/pdf", "Products.pdf");
-        }   
+        }
 
         // GET api/<ProductsController>/5
         [HttpGet("{id}", Name = "GetProductById")]
