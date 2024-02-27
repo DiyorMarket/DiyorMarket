@@ -202,5 +202,11 @@ namespace Lesson11.Controllers
 
             return customers;
         }
+        public IActionResult DownloadSaleItems(int saleId)
+        {
+            var result = _saleItemDataStore.GetExportFile(saleId);
+
+            return File(result, "application/xls", "SaleItems.xls");
+        }
     }
 }

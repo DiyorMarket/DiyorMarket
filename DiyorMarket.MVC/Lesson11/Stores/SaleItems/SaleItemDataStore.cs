@@ -8,7 +8,6 @@ namespace Lesson11.Stores.SaleItems
     public class SaleItemDataStore : ISaleItemDataStore
     {
         private readonly ApiClient _api;
-
         public SaleItemDataStore(ApiClient apiClient)
         {
             _api = apiClient;
@@ -88,7 +87,6 @@ namespace Lesson11.Stores.SaleItems
 
             return JsonConvert.DeserializeObject<SaleItem>(jsonResponse);
         }
-
         public void DeleteSaleItem(int id)
         {
             var response = _api.Delete($"saleItems/{id}");
@@ -97,6 +95,14 @@ namespace Lesson11.Stores.SaleItems
             {
                 throw new Exception($"Could not delete saleItems with id: {id}.");
             }
+        }
+
+        public Stream GetExportFile(int id)
+        {
+            var response = _api.Get($"saleItems/export/{id}");
+            var stream = response.Content.ReadAsStream();
+
+            return stream;
         }
     }
 }

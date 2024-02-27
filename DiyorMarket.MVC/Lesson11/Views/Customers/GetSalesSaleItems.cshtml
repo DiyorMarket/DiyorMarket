@@ -1,7 +1,8 @@
-﻿@model IEnumerable<Lesson11.ViewModels.CustomerSaleItemsViewModels>
+﻿@model List<Lesson11.ViewModels.CustomerSaleItemsViewModels>
 
 @{
     Layout = "~/Views/Shared/_DataGridLayout.cshtml";
+    ViewData["Title"] = "SaleItems Details";
     var customerId = Model.First().Sale.CustomerId;
 }
 
@@ -14,9 +15,9 @@
     </ol>
 </nav>
 
-<div  style="margin-top: 90px;">
+<div style="margin-top: 90px;">
     <div class="d-flex flex-row mt-3 mb-2 flex-row-reverse" style="gap: 10px;">
-        <a class="btn btn-outline-info" asp-action="download">
+        <a class="btn btn-outline-info" asp-action="DownloadSaleItems" asp-route-saleId="@Model.FirstOrDefault()?.SaleId">
             <i class="fa-solid fa-download"></i> Download
         </a>
     </div>

@@ -1,10 +1,12 @@
-﻿using DiyorMarket.Domain.DTOs.Sale;
+﻿using ClosedXML.Excel;
+using DiyorMarket.Domain.DTOs.Sale;
 using DiyorMarket.Domain.DTOs.SaleItem;
 using DiyorMarket.Domain.Interfaces.Services;
 using DiyorMarket.Domain.ResourceParameters;
 using DiyorMarket.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 
 namespace DiyorMarket.Controllers
 {
@@ -33,6 +35,34 @@ namespace DiyorMarket.Controllers
         {
             var salesSaleItems = _saleItemService.GetSalesSaleItems(salesId);
             return Ok(salesSaleItems);
+        }
+        [HttpGet("export/{saleId}")]
+        public ActionResult ExportSaleItems(int saleId)
+        {
+            var saleItems = _saleItemService.GetSalesSaleItems(saleId);
+
+            using XLWorkbook wb = new XLWorkbook();
+            var sheet1 = wb.AddWorksheet(GetSaleItemssDataTable(saleItems), "SaleItems");
+
+            sheet1.Column(1).Style.Font.FontColor = XLColor.Red;
+
+            sheet1.Columns(2, 4).Style.Font.FontColor = XLColor.Blue;
+
+            sheet1.Row(1).CellsUsed().Style.Fill.BackgroundColor = XLColor.Black;
+            //sheet1.Row(1).Cells(1,3).Style.Fill.BackgroundColor = XLColor.Yellow;
+            sheet1.Row(1).Style.Font.FontColor = XLColor.White;
+
+            sheet1.Row(1).Style.Font.Bold = true;
+            sheet1.Row(1).Style.Font.Shadow = true;
+            sheet1.Row(1).Style.Font.Underline = XLFontUnderlineValues.Single;
+            sheet1.Row(1).Style.Font.VerticalAlignment = XLFontVerticalTextAlignmentValues.Superscript;
+            sheet1.Row(1).Style.Font.Italic = true;
+
+            sheet1.Rows(2, 3).Style.Font.FontColor = XLColor.AshGrey;
+
+            using MemoryStream ms = new MemoryStream();
+            wb.SaveAs(ms);
+            return File(ms.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "SaleItems.xlsx");
         }
 
         [HttpGet("{id}", Name = "GetSaleItemById")]
@@ -76,6 +106,25 @@ namespace DiyorMarket.Controllers
             _saleItemService.DeleteSaleItem(id);
 
             return NoContent();
+        }
+        private DataTable GetSaleItemssDataTable(IEnumerable<SaleItemDto> saleItemDtos)
+        {
+            DataTable table = new DataTable();
+            table.TableName = "Sales Data";
+            table.Columns.Add("Id", typeof(int));
+            table.Columns.Add("Quantity", typeof(int));
+            table.Columns.Add("UnitPrice", typeof(decimal));
+            table.Columns.Add("SaleId", typeof(int));
+
+            foreach (var saleitem in saleItemDtos)
+            {
+                table.Rows.Add(saleitem.Id,
+                    saleitem.Quantity,
+                    saleitem.UnitPrice,
+                    saleitem.SaleId);
+            }
+
+            return table;
         }
     }
 }
