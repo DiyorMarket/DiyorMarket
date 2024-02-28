@@ -1,48 +1,126 @@
-﻿@model Lesson11.Models.Supply
+﻿@model Lesson11.ViewModels.SupplyViewModel
 
 @{
     ViewData["Title"] = "Create";
     Layout = "~/Views/Shared/_DataGridLayout.cshtml";
 }
-<head>
-    <link rel="stylesheet" href="~/css/animation.css" />
-</head>
+<script src="https://cdn.syncfusion.com/ej2/18.3.44/dist/ej2.min.js"></script>
 <!-- Navigation link -->
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="/dashboard/index"><i class="fa fa-home" style="color: white"></i></a></li>
-        <li class="breadcrumb-item"><a href="/Supplies/index">Supplies List</a></li>
+        <li class="breadcrumb-item"><a asp-controller="Supplies" asp-action="Index">Supplies List</a></li>
         <li class="breadcrumb-item active" aria-current="page">Create</li>
     </ol>
 </nav>
 
 <hr class="align-items-baseline" style="margin-top: 100px" />
 
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="SupplyDate" class="control-label"></label>
-                <input asp-for="SupplyDate" class="form-control" />
-                <span asp-validation-for="SupplyDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="SupplierId" class="control-label mt-2"></label>
-                <select asp-for="SupplierId" class="form-control border border-dark" asp-items="@ViewBag.Suppliers"></select>
-            </div>
-            <div class="form-group  mt-3">
-                <a asp-action="Index" class="btn btn-outline-info">
-                    <i class="fa-solid fa-arrow-left-long"></i>
-                    Back
-                </a>
-                <button class="btn btn-outline-success mr-auto">
-                    <i class="fa fa-plus"></i> Create
-                </button>
-            </div>
-        </form>
+
+<form asp-action="Create">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="d-flex justify-content-start">
+        <div class="p-2">
+            <label asp-for="Supply.SupplyDate" class="control-label"></label>
+            <input asp-for="Supply.SupplyDate" class="form-control" />
+            <span asp-validation-for="Supply.SupplyDate" class="text-danger"></span>
+        </div>
+        <div class="p-0 mr-5">
+            <label asp-for="Supply.SupplierId" class="control-label mt-2"></label>
+            <select asp-for="Supply.SupplierId" class="form-control border border-dark" asp-items="@ViewBag.Suppliers"></select>
+        </div>
     </div>
+    <div class="d-flex justify-content-start">
+        <div class="p-0 mr-5">
+            <label asp-for="SupplyItem.ProductId" class="control-label mt-2"></label>
+            <select asp-for="SupplyItem.ProductId" class="form-control border border-dark" asp-items="@ViewBag.Products"></select>
+        </div>
+        <div class="p-2">
+            <label asp-for="SupplyItem.Quantity" class="control-label"></label>
+            <input asp-for="SupplyItem.Quantity" class="form-control" />
+            <span asp-validation-for="SupplyItem.Quantity" class="text-danger"></span>
+        </div>
+        <div class="p-2">
+            <label asp-for="SupplyItem.UnitPrice" class="control-label"></label>
+            <input asp-for="SupplyItem.UnitPrice" class="form-control" />
+            <span asp-validation-for="SupplyItem.UnitPrice" class="text-danger"></span>
+        </div>
+    </div>
+    <div>
+        <div>
+            <ejs-grid id="supplies-list" dataSource="@(Model?.SupplyItems)" load="load">
+                <e-grid-editsettings allowAdding="true" allowDeleting="true" allowEditing="true" mode="Normal"></e-grid-editsettings>
+                <e-grid-columns>
+                    <e-grid-column headerText="Product Name" field="ProductId" type="string"></e-grid-column>
+                    <e-grid-column headerText="Quantity" field="Quantity" type="number" format="C2"></e-grid-column>
+                    <e-grid-column headerText="UnitPrice" field="UnitPrice" type="string"></e-grid-column>
+                </e-grid-columns>
+            </ejs-grid>
+        </div>
+        <div class="form-group mt-3">
+            <button class="btn btn-outline-success mr-auto" type="button" id="btnAddSupplyItem">
+                <i class="fa fa-plus"></i> Add
+            </button>
+        </div>
+    </div>
+</form>
+<div class="form-group  mt-3">
+    <a asp-action="Index" class="btn btn-outline-info">
+        <i class="fa-solid fa-arrow-left-long"></i>
+        Back
+    </a>
+    <button class="btn btn-outline-success mr-auto">
+        <i class="fa fa-plus"></i> Create
+    </button>
 </div>
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        // Initialize supplyItems with existing data or an empty array
+        var supplyItems = @Html.Raw(Json.Serialize(Model?.SupplyItems));
+
+        // Load function to initialize the grid
+        function load() {
+            var grid = document.getElementById("supplies-list").ej2_instances[0];
+            if (!grid) {
+                ej.grids.Grid.Inject(ej.grids.Edit, ej.grids.Toolbar);
+                var gridOptions = {
+                    dataSource: [],
+                    gridLines: "Vertical",
+                    toolbar: ["Edit", "Delete"],
+                    editSettings: { allowAdding: true, allowDeleting: true, allowEditing: true, mode: "Normal" },
+                    columns: [
+                        { headerText: "Product Name", field: "ProductId", type: "string" },
+                        { headerText: "Quantity", field: "Quantity", type: "number", format: "C2" },
+                        { headerText: "UnitPrice", field: "UnitPrice", type: "string" }
+                    ]
+                };
+                grid = new ej.grids.Grid(gridOptions);
+                grid.appendTo("#supplies-list");
+            }
+
+            grid.dataSource = supplyItems;
+            grid.refresh();
+        }
+
+        // Event listener for the "Add" button
+        document.getElementById("btnAddSupplyItem").addEventListener("click", function () {
+            var productId = prompt("Enter Product ID:");
+            var quantity = prompt("Enter Quantity:");
+            var unitPrice = prompt("Enter Unit Price:");
+
+            var supplyItem = {
+                ProductId: productId,
+                Quantity: quantity,
+                UnitPrice: unitPrice
+            };
+
+            supplyItems.push(supplyItem);
+            load();
+        });
+    </script>
 }
+
+

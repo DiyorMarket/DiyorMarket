@@ -1,21 +1,28 @@
 ﻿using ExcelDataReader;
 using Lesson11.Models;
+using Lesson11.Stores.Products;
 using Lesson11.Stores.Suppliers;
 using Lesson11.Stores.Supplies;
+using Lesson11.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using NuGet.Common;
 
 namespace Lesson11.Controllers
 {
     public class SuppliesController : Controller
     {
         private readonly ISupplyDataStore _supplyDataStore;
+        private readonly IProductDataStore _productDataStore;
         private readonly ISupplierDataStore _supplierDataStore;
+        private List<SupplyItem> supplyItems;
 
         public SuppliesController(ISupplyDataStore supplyDataStore,
+            IProductDataStore productDataStore,
             ISupplierDataStore supplierDataStore)
         {
             _supplyDataStore = supplyDataStore ?? throw new ArgumentNullException(nameof(supplyDataStore));
+            _productDataStore = productDataStore ?? throw new ArgumentNullException(nameof(productDataStore));
             _supplierDataStore = supplierDataStore ?? throw new ArgumentNullException(nameof(supplierDataStore));
         }
 
@@ -65,6 +72,8 @@ namespace Lesson11.Controllers
         {
             var suppliers = GetAllSupplier(null);
             ViewBag.Suppliers = new SelectList(suppliers, "Id", "FirstName");
+            var products = _productDataStore.GetProducts(null, null,0,null);
+            ViewBag.Products = new SelectList(products.Data, "Id", "Name");
             return View();
         }
 
@@ -231,6 +240,14 @@ namespace Lesson11.Controllers
             }
 
             return categories;
+        }
+
+        [ActionName("AddSupplyItems")]
+        public IEnumerable<SupplyItem> AddSupplyItems(SupplyItem supplyItem)
+        {
+            supplyItems.Add(supplyItem);
+
+            return supplyItems;
         }
     }
 }
