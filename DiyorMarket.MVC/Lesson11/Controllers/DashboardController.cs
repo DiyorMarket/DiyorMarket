@@ -22,6 +22,8 @@ namespace Lesson11.Controllers
                 return BadRequest();
             }
 
+            Thread.Sleep(3000);
+
             SetViewBagProperties(dashboard);
 
             return View();

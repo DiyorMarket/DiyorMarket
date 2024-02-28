@@ -4,9 +4,12 @@
     ViewData["Title"] = "Edit";
     Layout = "~/Views/Shared/_DataGridLayout.cshtml";
 }
+
 <head>
     <link rel="stylesheet" href="~/css/animation.css" />
+    <link rel="stylesheet" href="~/css/loading.css" />   
 </head>
+
 <!-- Navigation link -->
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
@@ -21,7 +24,8 @@
 
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <!-- Add id attribute to the form for easier selection in JavaScript -->
+        <form id="editForm" asp-action="Edit">
             <input type="hidden" asp-for="Id" />
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
@@ -31,18 +35,22 @@
             </div>
             <!-- Buttons -->
             <div class="form-group mt-3">
-                <a asp-action="Index" class="btn btn-outline-info">
+                <a asp-action="Details" asp-route-id="@Model?.Id" class="btn btn-outline-info">
                     <i class="fa-solid fa-arrow-left-long"></i>
                     Back
                 </a>
-                <button class="btn btn-outline-success">
+                <button type="submit" class="btn btn-outline-success" id="submitButton">
                     <i class="fa fa-pencil"></i> Save
                 </button>
             </div>
         </form>
+        <!-- Loading icon -->
+        <div class="loader" id="loader"></div>
     </div>
 </div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/Loading.js"></script>
+
 }

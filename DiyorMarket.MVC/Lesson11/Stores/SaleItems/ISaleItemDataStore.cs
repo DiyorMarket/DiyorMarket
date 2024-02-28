@@ -7,6 +7,7 @@ namespace Lesson11.Stores.SaleItems
     {
         public GetSaleItemResponse? GetSaleItems();
         public IEnumerable<SaleItem> GetSalesSaleItems(int salesId);
+        public Stream GetExportFile(int salesId);
         public SaleItem? GetSaleItem(int id);
         public SaleItem? CreateSaleItem(SaleItem category);
         public SaleItem? UpdateSaleItem(SaleItem category);
