@@ -242,10 +242,10 @@ namespace Lesson11.Controllers
             return categories;
         }
 
+        [ActionName("AddSupplyItems")]
         public IEnumerable<SupplyItem> AddSupplyItems(SupplyItem supplyItem)
         {
             supplyItems.Add(supplyItem);
-            ViewBag.SupplyItems = supplyItems;
 
             return supplyItems;
         }
