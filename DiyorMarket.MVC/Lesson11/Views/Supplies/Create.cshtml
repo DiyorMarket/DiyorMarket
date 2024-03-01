@@ -1,10 +1,11 @@
 ﻿@model Lesson11.ViewModels.SupplyViewModel
+@using System.Collections.Generic
 
 @{
     ViewData["Title"] = "Create";
     Layout = "~/Views/Shared/_DataGridLayout.cshtml";
 }
-<script src="https://cdn.syncfusion.com/ej2/18.3.44/dist/ej2.min.js"></script>
+
 <!-- Navigation link -->
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
@@ -33,7 +34,7 @@
     <div class="d-flex justify-content-start">
         <div class="p-0 mr-5">
             <label asp-for="SupplyItem.ProductId" class="control-label mt-2"></label>
-            <select asp-for="SupplyItem.ProductId" class="form-control border border-dark" asp-items="@ViewBag.Products"></select>
+            <select asp-for="SupplyItem.ProductId" id="supplyItemProductId" class="form-control border border-dark" asp-items="@ViewBag.Products"></select>
         </div>
         <div class="p-2">
             <label asp-for="SupplyItem.Quantity" class="control-label"></label>
@@ -46,23 +47,14 @@
             <span asp-validation-for="SupplyItem.UnitPrice" class="text-danger"></span>
         </div>
     </div>
-    <div>
-        <div>
-            <ejs-grid id="supplies-list" dataSource="@(Model?.SupplyItems)" load="load">
-                <e-grid-editsettings allowAdding="true" allowDeleting="true" allowEditing="true" mode="Normal"></e-grid-editsettings>
-                <e-grid-columns>
-                    <e-grid-column headerText="Product Name" field="ProductId" type="string"></e-grid-column>
-                    <e-grid-column headerText="Quantity" field="Quantity" type="number" format="C2"></e-grid-column>
-                    <e-grid-column headerText="UnitPrice" field="UnitPrice" type="string"></e-grid-column>
-                </e-grid-columns>
-            </ejs-grid>
-        </div>
-        <div class="form-group mt-3">
-            <button class="btn btn-outline-success mr-auto" type="button" id="btnAddSupplyItem">
-                <i class="fa fa-plus"></i> Add
-            </button>
-        </div>
+</form>
+<form asp-action="AddSupplyItem" id="addSupplyItemForm">
+    <div class="form-group mt-3">
+        <button class="btn btn-outline-success mr-auto" type="button" id="btnAddSupplyItem">
+            <i class="fa fa-plus"></i> Add
+        </button>
     </div>
+    <div id="supplyItems-list"></div>
 </form>
 <div class="form-group  mt-3">
     <a asp-action="Index" class="btn btn-outline-info">
@@ -78,49 +70,30 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
     <script>
-        // Initialize supplyItems with existing data or an empty array
-        var supplyItems = @Html.Raw(Json.Serialize(Model?.SupplyItems));
-
-        // Load function to initialize the grid
-        function load() {
-            var grid = document.getElementById("supplies-list").ej2_instances[0];
-            if (!grid) {
-                ej.grids.Grid.Inject(ej.grids.Edit, ej.grids.Toolbar);
-                var gridOptions = {
-                    dataSource: [],
-                    gridLines: "Vertical",
-                    toolbar: ["Edit", "Delete"],
-                    editSettings: { allowAdding: true, allowDeleting: true, allowEditing: true, mode: "Normal" },
-                    columns: [
-                        { headerText: "Product Name", field: "ProductId", type: "string" },
-                        { headerText: "Quantity", field: "Quantity", type: "number", format: "C2" },
-                        { headerText: "UnitPrice", field: "UnitPrice", type: "string" }
-                    ]
-                };
-                grid = new ej.grids.Grid(gridOptions);
-                grid.appendTo("#supplies-list");
-            }
-
-            grid.dataSource = supplyItems;
-            grid.refresh();
-        }
-
-        // Event listener for the "Add" button
-        document.getElementById("btnAddSupplyItem").addEventListener("click", function () {
-            var productId = prompt("Enter Product ID:");
-            var quantity = prompt("Enter Quantity:");
-            var unitPrice = prompt("Enter Unit Price:");
-
+        $("#btnAddSupplyItem").click(function () {
             var supplyItem = {
-                ProductId: productId,
-                Quantity: quantity,
-                UnitPrice: unitPrice
+                ProductId: $("#supplyItemProductId").val(), Quantity: parseInt($("#SupplyItem_Quantity").val(), 10),
+                UnitPrice: parseFloat($("#SupplyItem_UnitPrice").val())
+
             };
 
-            supplyItems.push(supplyItem);
-            load();
+            $.ajax({
+                type: "POST",
+                url: "/Supplies/AddSupplyItem",
+                data: supplyItem,
+                success: function (result) {
+                    // Обновление данных в ejs-grid
+                    var grid = document.getElementById('supplyItems-list').ej2_instances[0];
+                    grid.dataSource = result; // Предполагается, что result - это обновленный список элементов
+                    grid.refresh();
+                },
+                error: function (error) {
+                    console.error("Ошибка при добавлении элемента:", error);
+                }
+            });
         });
     </script>
 }
+
 
 

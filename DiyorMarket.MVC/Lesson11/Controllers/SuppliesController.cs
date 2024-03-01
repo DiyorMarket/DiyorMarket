@@ -24,6 +24,7 @@ namespace Lesson11.Controllers
             _supplyDataStore = supplyDataStore ?? throw new ArgumentNullException(nameof(supplyDataStore));
             _productDataStore = productDataStore ?? throw new ArgumentNullException(nameof(productDataStore));
             _supplierDataStore = supplierDataStore ?? throw new ArgumentNullException(nameof(supplierDataStore));
+            supplyItems = new List<SupplyItem>();
         }
 
         public IActionResult Index(string? searchString, int? supplierId, int pageNumber, int? prevSupplierId)
@@ -72,31 +73,27 @@ namespace Lesson11.Controllers
         {
             var suppliers = GetAllSupplier(null);
             ViewBag.Suppliers = new SelectList(suppliers, "Id", "FirstName");
-            var products = _productDataStore.GetProducts(null, null,0,null);
+            var products = _productDataStore.GetProducts(null, null, 0, null);
             ViewBag.Products = new SelectList(products.Data, "Id", "Name");
             return View();
         }
 
         [HttpPost]
-        public IActionResult Create(Supply supply)
+        public IActionResult Create(SupplyViewModel supplyViewModel)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
 
-            var result = _supplyDataStore.CreateSupply(new Supply
+            var supply = new Supply
             {
-                SupplyDate = supply.SupplyDate,
-                SupplierId = supply.SupplierId,
-            });
-
-            if (result is null)
-            {
-                return BadRequest();
-            }
-
-            return RedirectToAction("Details", new { id = result.Id });
+                SupplyDate = supplyViewModel.Supply.SupplyDate,
+                SupplierId = supplyViewModel.Supply.SupplierId,
+            };
+            _supplyDataStore.CreateSupply(supply);
+            
+            return RedirectToAction("Details", new { id = supply.Id });
         }
 
         public IActionResult Details(int id)
@@ -242,12 +239,21 @@ namespace Lesson11.Controllers
             return categories;
         }
 
-        public IEnumerable<SupplyItem> AddSupplyItems(SupplyItem supplyItem)
+        [HttpPost]
+        public IActionResult AddSupplyItem(SupplyItem supplyItem)
         {
+            // Получение текущих поставок из TempData
+            var supplyItems = TempData["SupplyItems"] as List<SupplyItem> ?? new List<SupplyItem>();
             supplyItems.Add(supplyItem);
-            ViewBag.SupplyItems = supplyItems;
 
-            return supplyItems;
+            // Сохранение обновленных данных в TempData
+            TempData["SupplyItems"] = supplyItems;
+
+            // Возврат частичного представления с обновленными данными
+            return PartialView("_SupplyItemsPartial", supplyItems);
         }
+
+
+
     }
 }
