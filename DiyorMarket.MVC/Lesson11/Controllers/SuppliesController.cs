@@ -242,14 +242,11 @@ namespace Lesson11.Controllers
         [HttpPost]
         public IActionResult AddSupplyItem(SupplyItem supplyItem)
         {
-            // Получение текущих поставок из TempData
             var supplyItems = TempData["SupplyItems"] as List<SupplyItem> ?? new List<SupplyItem>();
             supplyItems.Add(supplyItem);
 
-            // Сохранение обновленных данных в TempData
             TempData["SupplyItems"] = supplyItems;
 
-            // Возврат частичного представления с обновленными данными
             return PartialView("_SupplyItemsPartial", supplyItems);
         }
 
