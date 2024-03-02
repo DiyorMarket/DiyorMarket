@@ -14,11 +14,11 @@ namespace Lesson11.Stores.Sales
         {
             _api = apiClient;
         }
-        public GetSaleResponse? GetSales(string? searchString, int? customerId, int pageNumber , DateTime?  saleDate)
+        public GetSaleResponse? GetSales(string? searchString, int? customerId, int pageNumber, DateTime? saleDate)
         {
             StringBuilder query = new("");
 
-            if(saleDate is not null)
+            if (saleDate is not null)
             {
                 query.Append($"saleDate={saleDate.Value.ToString("MM/dd/yyyy")}&");
             }

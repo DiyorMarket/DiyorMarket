@@ -5,7 +5,7 @@ namespace Lesson11.Stores.Suppliers
 {
     public interface ISupplierDataStore
     {
-        public GetSupplierResponse? GetSuppliers(string? searchString,int pageNumber);
+        public GetSupplierResponse? GetSuppliers(string? searchString, int pageNumber);
         public Supplier? GetSupplier(int id);
         public Stream GetExportFile();
         public Supplier? CreateSupplier(Supplier category);
