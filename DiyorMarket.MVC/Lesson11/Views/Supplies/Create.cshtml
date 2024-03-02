@@ -38,33 +38,34 @@
         </div>
         <div class="p-2">
             <label asp-for="SupplyItem.Quantity" class="control-label"></label>
-            <input asp-for="SupplyItem.Quantity" class="form-control" />
+            <input asp-for="SupplyItem.Quantity" id="SupplyItem_Quantity" class="form-control" />
             <span asp-validation-for="SupplyItem.Quantity" class="text-danger"></span>
         </div>
         <div class="p-2">
             <label asp-for="SupplyItem.UnitPrice" class="control-label"></label>
-            <input asp-for="SupplyItem.UnitPrice" class="form-control" />
+            <input asp-for="SupplyItem.UnitPrice" id="SupplyItem_UnitPrice" class="form-control" />
             <span asp-validation-for="SupplyItem.UnitPrice" class="text-danger"></span>
         </div>
+
     </div>
-</form>
-<form asp-action="AddSupplyItem" id="addSupplyItemForm">
+
     <div class="form-group mt-3">
         <button class="btn btn-outline-success mr-auto" type="button" id="btnAddSupplyItem">
             <i class="fa fa-plus"></i> Add
         </button>
     </div>
-    <div id="supplyItems-list"></div>
+
+    <div class="form-group mt-3">
+        <a asp-action="Index" class="btn btn-outline-info">
+            <i class="fa-solid fa-arrow-left-long"></i>
+            Back
+        </a>
+        <button class="btn btn-outline-success mr-auto">
+            <i class="fa fa-plus"></i> Create
+        </button>
+    </div>
 </form>
-<div class="form-group  mt-3">
-    <a asp-action="Index" class="btn btn-outline-info">
-        <i class="fa-solid fa-arrow-left-long"></i>
-        Back
-    </a>
-    <button class="btn btn-outline-success mr-auto">
-        <i class="fa fa-plus"></i> Create
-    </button>
-</div>
+
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
@@ -72,9 +73,9 @@
     <script>
         $("#btnAddSupplyItem").click(function () {
             var supplyItem = {
-                ProductId: $("#supplyItemProductId").val(), Quantity: parseInt($("#SupplyItem_Quantity").val(), 10),
+                ProductId: $("#supplyItemProductId").val(),
+                Quantity: parseInt($("#SupplyItem_Quantity").val(), 10),
                 UnitPrice: parseFloat($("#SupplyItem_UnitPrice").val())
-
             };
 
             $.ajax({
@@ -83,9 +84,29 @@
                 data: supplyItem,
                 success: function (result) {
                     // Обновление данных в ejs-grid
-                    var grid = document.getElementById('supplyItems-list').ej2_instances[0];
-                    grid.dataSource = result; // Предполагается, что result - это обновленный список элементов
-                    grid.refresh();
+                    var gridElement = document.getElementById('supplyItems-list');
+                    var grid = ej.base.getComponent(gridElement, 'ejs-grid');
+
+                    if (!grid) {
+                        console.log("Grid not found. Creating new grid.");
+
+                        // Инициализация EJS Grid
+                        grid = new ej.grids.Grid({
+                            dataSource: result,
+                            columns: [
+                                { field: 'ProductId', headerText: 'Product Name', type: 'string' },
+                                { field: 'Quantity', headerText: 'Quantity', type: 'number', format: 'C2' },
+                                { field: 'UnitPrice', headerText: 'UnitPrice', type: 'string' },
+                                // Дополните вашими столбцами
+                            ]
+                        });
+
+                        grid.appendTo(gridElement);
+                    } else {
+                        // Если EJS Grid уже существует, обновите данные
+                        grid.dataSource = result;
+                        grid.refresh();
+                    }
                 },
                 error: function (error) {
                     console.error("Ошибка при добавлении элемента:", error);
@@ -93,7 +114,5 @@
             });
         });
     </script>
+
 }
-
-
-

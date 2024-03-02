@@ -242,15 +242,11 @@ namespace Lesson11.Controllers
         [HttpPost]
         public IActionResult AddSupplyItem(SupplyItem supplyItem)
         {
-            var supplyItems = TempData["SupplyItems"] as List<SupplyItem> ?? new List<SupplyItem>();
             supplyItems.Add(supplyItem);
 
-            TempData["SupplyItems"] = supplyItems;
+            ViewBag.SupplyItems = supplyItems;
 
             return PartialView("_SupplyItemsPartial", supplyItems);
         }
-
-
-
     }
 }
