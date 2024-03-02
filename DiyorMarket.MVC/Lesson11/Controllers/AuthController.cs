@@ -8,7 +8,6 @@ namespace Lesson11.Controllers
 {
     public class AuthController : Controller
     {
-        private int logOut;
         private readonly IUserDataStore _userDataStore;
         public AuthController(IUserDataStore userDataStore)
         {
