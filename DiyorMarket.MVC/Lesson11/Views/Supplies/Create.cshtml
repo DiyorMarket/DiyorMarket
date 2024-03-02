@@ -18,101 +18,131 @@
 <hr class="align-items-baseline" style="margin-top: 100px" />
 
 
-<form asp-action="Create">
+<div>
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="d-flex justify-content-start">
-        <div class="p-2">
-            <label asp-for="Supply.SupplyDate" class="control-label"></label>
-            <input asp-for="Supply.SupplyDate" class="form-control" />
-            <span asp-validation-for="Supply.SupplyDate" class="text-danger"></span>
-        </div>
+        <form id="form-element" class="form-vertical">
+            <div class="form-group">
+                <ejs-datetimepicker id="supply-date" value="@DateTime.Now"></ejs-datetimepicker>
+            </div>
+        </form>
         <div class="p-0 mr-5">
-            <label asp-for="Supply.SupplierId" class="control-label mt-2"></label>
-            <select asp-for="Supply.SupplierId" class="form-control border border-dark" asp-items="@ViewBag.Suppliers"></select>
+            <label class="control-label mt-2"></label>
+            <select id="supplier-id" class="form-control border border-dark" asp-for="SupplierId" asp-items="@ViewBag.Suppliers"></select>
         </div>
     </div>
     <div class="d-flex justify-content-start">
         <div class="p-0 mr-5">
-            <label asp-for="SupplyItem.ProductId" class="control-label mt-2"></label>
-            <select asp-for="SupplyItem.ProductId" id="supplyItemProductId" class="form-control border border-dark" asp-items="@ViewBag.Products"></select>
+            <label class="control-label mt-2"></label>
+            <select id="supplyItemProductId" class="form-control border border-dark" asp-items="@ViewBag.Products"></select>
         </div>
         <div class="p-2">
-            <label asp-for="SupplyItem.Quantity" class="control-label"></label>
-            <input asp-for="SupplyItem.Quantity" id="SupplyItem_Quantity" class="form-control" />
-            <span asp-validation-for="SupplyItem.Quantity" class="text-danger"></span>
+            <label class="control-label"></label>
+            <input id="SupplyItem_Quantity" class="form-control" />
+            <span class="text-danger"></span>
         </div>
         <div class="p-2">
-            <label asp-for="SupplyItem.UnitPrice" class="control-label"></label>
-            <input asp-for="SupplyItem.UnitPrice" id="SupplyItem_UnitPrice" class="form-control" />
-            <span asp-validation-for="SupplyItem.UnitPrice" class="text-danger"></span>
+            <label class="control-label"></label>
+            <input id="SupplyItem_UnitPrice" class="form-control" />
+            <span class="text-danger"></span>
         </div>
-
+        <div class="p-2">
+            <button class="btn btn-outline-success mr-auto" type="button" id="addItem">
+                <i class="fa fa-plus"></i> Add
+            </button>
+        </div>
     </div>
 
-    <div class="form-group mt-3">
-        <button class="btn btn-outline-success mr-auto" type="button" id="btnAddSupplyItem">
-            <i class="fa fa-plus"></i> Add
-        </button>
+    <div class="form-group">
+        <ejs-grid id="supply-items" asp-for="Supply.SupplyItems" toolbar="@(new List<string>() { "Edit", "Delete" })">
+            <e-grid-editsettings allowDeleting="true" allowEditing="true" mode="Normal"></e-grid-editsettings>
+            <e-grid-columns>
+                <e-grid-column headerText="Product Name" field="ProductId" type="string"></e-grid-column>
+                <e-grid-column headerText="Quantity" field="Quantity" type="number" format="C2"></e-grid-column>
+                <e-grid-column headerText="UnitPrice" field="UnitPrice" type="string"></e-grid-column>
+                <e-grid-column headerText="Total Price" field="TotalPrice" type="number" format="C2"></e-grid-column>
+            </e-grid-columns>
+        </ejs-grid>
     </div>
 
-    <div class="form-group mt-3">
+    <div class="mt-3">
         <a asp-action="Index" class="btn btn-outline-info">
             <i class="fa-solid fa-arrow-left-long"></i>
             Back
         </a>
-        <button class="btn btn-outline-success mr-auto">
+        <button class="btn btn-success mr-auto" type="button" id="create">
             <i class="fa fa-plus"></i> Create
         </button>
     </div>
-</form>
+</div>
 
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-    <script>
-        $("#btnAddSupplyItem").click(function () {
-            var supplyItem = {
-                ProductId: $("#supplyItemProductId").val(),
-                Quantity: parseInt($("#SupplyItem_Quantity").val(), 10),
-                UnitPrice: parseFloat($("#SupplyItem_UnitPrice").val())
-            };
+<script>
+    // add new item
+    document.getElementById('addItem').onclick = function () {
+        var grid = document.getElementById("supply-items").ej2_instances[0];
+        var supplyItem = {
+            ProductId: $("#supplyItemProductId").val(),
+            Quantity: parseInt($("#SupplyItem_Quantity").val(), 10),
+            UnitPrice: parseFloat($("#SupplyItem_UnitPrice").val()),
+        };
+        supplyItem.TotalPrice = supplyItem.Quantity * supplyItem.UnitPrice;
 
-            $.ajax({
-                type: "POST",
-                url: "/Supplies/AddSupplyItem",
-                data: supplyItem,
-                success: function (result) {
-                    // Обновление данных в ejs-grid
-                    var gridElement = document.getElementById('supplyItems-list');
-                    var grid = ej.base.getComponent(gridElement, 'ejs-grid');
+        if (grid.dataSource.some(el => el.ProductId == supplItem.ProductId)) {
+            return;
+        }
 
-                    if (!grid) {
-                        console.log("Grid not found. Creating new grid.");
+        grid.dataSource.unshift(supplyItem); // add new record.
+        grid.refresh(); // refresh the Grid.
+    };
 
-                        // Инициализация EJS Grid
-                        grid = new ej.grids.Grid({
-                            dataSource: result,
-                            columns: [
-                                { field: 'ProductId', headerText: 'Product Name', type: 'string' },
-                                { field: 'Quantity', headerText: 'Quantity', type: 'number', format: 'C2' },
-                                { field: 'UnitPrice', headerText: 'UnitPrice', type: 'string' },
-                                // Дополните вашими столбцами
-                            ]
-                        });
-
-                        grid.appendTo(gridElement);
-                    } else {
-                        // Если EJS Grid уже существует, обновите данные
-                        grid.dataSource = result;
-                        grid.refresh();
+    // submit supply
+    document.getElementById('create').onclick = function () {
+        var grid = document.getElementById("supply-items").ej2_instances[0];
+        var items = grid.dataSource;
+        const selectedDate = document.getElementById('supply-date').ej2_instances[0].value;
+        var newSupply = {
+            SupplyItems: items,
+            Date: selectedDate,
+            supplierId: $("#supplier-id").val()
+        };
+        console.log(newSupply);
+        $.ajax
+            ({
+                url: '@Url.Action("Create", "Supplies")',
+                type: 'POST',
+                data: JSON.stringify(newSupply), //
+                contentType: "application/json",
+                dataType: 'JSON',
+                success: function (data) {
+                    document.getElementById('targetButton').onclick = function () {
+                        var dialog = document.getElementById("dialog").ej2_instances[0];
+                        dialog.show();
                     }
                 },
-                error: function (error) {
-                    console.error("Ошибка при добавлении элемента:", error);
+                error: function(data) {
+                    alert('There was an error saving creating new supply! Please, try again.');
                 }
             });
-        });
-    </script>
+    }
 
-}
+    document.addEventListener('DOMContentLoaded', function () {
+        var options = {
+            rules: {
+                //must specify the name attribute value in rules section
+                'datevalue': { required: true }
+            },
+            customPlacement: (inputElement, errorElement) => {
+                //to place the error message in custom position
+                //inputElement - target element where the error text will be appended
+                //errorElement - error text which will be displayed.
+                inputElement.parentElement.parentElement.appendChild(errorElement);
+            }
+        };
+        var formObject = new ej.inputs.FormValidator('#form-element', options);
+    });
+
+    function dlgButtonClick() {
+        var dialogObj = document.getElementById('dialog').ej2_instances[0];
+        dialogObj.hide();
+    }
+</script>

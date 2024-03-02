@@ -79,17 +79,17 @@ namespace Lesson11.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(SupplyViewModel supplyViewModel)
+        public IActionResult Create([FromBody] SupplyViewModel supplyViewModel)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
-
             var supply = new Supply
             {
-                SupplyDate = supplyViewModel.Supply.SupplyDate,
-                SupplierId = supplyViewModel.Supply.SupplierId,
+                SupplyDate = supplyViewModel.Date,
+                SupplierId = supplyViewModel.SupplierId,
+                SupplyItems = supplyViewModel.SupplyItems
             };
             _supplyDataStore.CreateSupply(supply);
             
@@ -240,13 +240,13 @@ namespace Lesson11.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddSupplyItem(SupplyItem supplyItem)
+        public List<SupplyItem> AddSupplyItem(SupplyItem supplyItem)
         {
             supplyItems.Add(supplyItem);
 
             ViewBag.SupplyItems = supplyItems;
 
-            return PartialView("_SupplyItemsPartial", supplyItems);
+            return supplyItems;
         }
     }
 }
