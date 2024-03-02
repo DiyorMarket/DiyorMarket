@@ -1,6 +1,6 @@
+using Lesson11.Constants;
 using Lesson11.Extensions;
 using Lesson11.Filters;
-using Lesson11.Constants;
 
 namespace Lesson11
 {
@@ -11,7 +11,7 @@ namespace Lesson11
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            builder.Services.AddControllersWithViews(options => 
+            builder.Services.AddControllersWithViews(options =>
                 options.Filters.Add(new ApiExceptionFilter()));
             builder.Services.ConfigureDataStores();
             builder.Services.ConfigureServices();

@@ -1,4 +1,3 @@
-using Bogus.DataSets;
 using ExcelDataReader;
 using Lesson11.Models;
 using Lesson11.Stores.Categories;
@@ -18,7 +17,7 @@ namespace Lesson11.Controllers
         public IActionResult Index(string searchString, int? pageNumber)
         {
             var categories = _categoryDataStore.GetCategories(searchString, pageNumber);
-            foreach(var category in categories.Data)
+            foreach (var category in categories.Data)
             {
                 category.NumberOfProducts = category.Products.Count();
             }

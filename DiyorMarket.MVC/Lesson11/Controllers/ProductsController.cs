@@ -26,7 +26,7 @@ public class ProductsController : Controller
             categoryId = prevCategoryId;
         }
 
-        var filteredProducts = _productDataStore.GetProducts(searchString, categoryId, pageNumber,expireDate);
+        var filteredProducts = _productDataStore.GetProducts(searchString, categoryId, pageNumber, expireDate);
 
         var categories = GetAllCategories();
 
@@ -120,7 +120,7 @@ public class ProductsController : Controller
     public IActionResult Edit(int id, string name, string description,
         decimal salePrice, decimal supplyPrice, DateTime expireDate, int categoryId)
     {
-        if(categoryId == 0)
+        if (categoryId == 0)
         {
             var product = _productDataStore.GetProduct(id);
             categoryId = product.Category.Id;
@@ -226,7 +226,7 @@ public class ProductsController : Controller
                         : DateTime.MinValue,
                 CategoryId = int.TryParse(reader.GetValue(6)?.ToString(), out int categoryId)
                         ? categoryId
-                        : 0,            
+                        : 0,
             });
         }
         return products;

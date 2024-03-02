@@ -3,10 +3,8 @@ using Lesson11.Models;
 using Lesson11.Stores.Products;
 using Lesson11.Stores.Suppliers;
 using Lesson11.Stores.Supplies;
-using Lesson11.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using NuGet.Common;
 
 namespace Lesson11.Controllers
 {
@@ -72,7 +70,7 @@ namespace Lesson11.Controllers
         {
             var suppliers = GetAllSupplier(null);
             ViewBag.Suppliers = new SelectList(suppliers, "Id", "FirstName");
-            var products = _productDataStore.GetProducts(null, null,0,null);
+            var products = _productDataStore.GetProducts(null, null, 0, null);
             ViewBag.Products = new SelectList(products.Data, "Id", "Name");
             return View();
         }

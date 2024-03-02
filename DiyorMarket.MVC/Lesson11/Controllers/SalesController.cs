@@ -18,7 +18,7 @@ namespace Lesson11.Controllers
             _customersDataStore = customersDataStore ?? throw new ArgumentNullException(nameof(customersDataStore)); ;
         }
 
-        public IActionResult Index(string? searchString, int? customerId, DateTime? saleDate ,int pageNumber)
+        public IActionResult Index(string? searchString, int? customerId, DateTime? saleDate, int pageNumber)
         {
             var sales = _saleDataStore.GetSales(searchString, customerId, pageNumber, saleDate);
             var customers = GetAllCustomers(searchString);
@@ -145,7 +145,7 @@ namespace Lesson11.Controllers
             if (customerId == 0)
             {
                 var sale = _saleDataStore.GetSale(id);
-                customerId = sale.Customer.Id?? customerId;
+                customerId = sale.Customer.Id ?? customerId;
             }
             _saleDataStore.UpdateSale(new Sale
             {

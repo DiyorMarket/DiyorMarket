@@ -20,14 +20,14 @@ namespace Lesson11.Stores.Categories
 
         public GetCategoryResponse? GetCategories(string? searchString, int? pageNumber)
         {
-			StringBuilder query = new("");
+            StringBuilder query = new("");
 
-			if (!string.IsNullOrEmpty(searchString))
-			{
-				query.Append($"?searchString={searchString}");
-			}
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                query.Append($"?searchString={searchString}");
+            }
 
-                
+
             if (pageNumber != null)
             {
                 query.Append($"?pageNumber={pageNumber}");
@@ -46,7 +46,7 @@ namespace Lesson11.Stores.Categories
             return result;
         }
 
-		public Category? GetCategory(int id)
+        public Category? GetCategory(int id)
         {
             var response = _api.Get($"categories/{id}");
 
@@ -72,7 +72,7 @@ namespace Lesson11.Stores.Categories
             }
 
             var jsonResponse = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
-            
+
             return JsonConvert.DeserializeObject<Category>(jsonResponse);
         }
 
