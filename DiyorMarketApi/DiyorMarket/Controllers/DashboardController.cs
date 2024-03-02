@@ -14,7 +14,6 @@ public class DashboardController : ControllerBase
 
     public DashboardController(IDashboardService dashboardService)
     {
-        Thread.Sleep(10000);
         _dashboardService = dashboardService;
     }
 

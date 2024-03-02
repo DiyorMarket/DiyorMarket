@@ -8,22 +8,24 @@ namespace Lesson11.Controllers
 {
     public class AuthController : Controller
     {
+        private int logOut;
         private readonly IUserDataStore _userDataStore;
         public AuthController(IUserDataStore userDataStore)
         {
             _userDataStore = userDataStore ?? throw new ArgumentNullException(nameof(userDataStore));
         }
-
-        public IActionResult Index()
+        public IActionResult Login()
         {
             if (HttpContext.Request.Cookies.TryGetValue(Configurations.JwtToken, out _))
             {
                 return RedirectToAction("Index", "Dashboard");
             }
-
+            return RedirectToAction("Index", "Auth");
+        }
+        public IActionResult Index()
+        {
             return View();
         }
-
         [HttpPost]
         public IActionResult Index(LoginViewModel loginViewModel)
         {
@@ -56,8 +58,6 @@ namespace Lesson11.Controllers
             ModelState.AddModelError("Password", "Incorrect password or login");
             return View(loginViewModel);
         }
-
-
 
         public IActionResult Register()
         {
