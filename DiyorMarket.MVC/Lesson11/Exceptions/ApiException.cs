@@ -11,8 +11,8 @@ namespace Lesson11.Exceptions
             StatusCode = statusCode;
         }
 
-        public ApiException(HttpStatusCode statusCode, string message) : 
-            base (message)
+        public ApiException(HttpStatusCode statusCode, string message) :
+            base(message)
         {
             StatusCode = statusCode;
         }
