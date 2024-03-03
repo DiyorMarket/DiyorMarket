@@ -74,7 +74,7 @@ namespace Lesson11.Controllers
             var suppliers = GetAllSupplier(null);
             ViewBag.Suppliers = new SelectList(suppliers, "Id", "FirstName");
             var products = _productDataStore.GetProducts(null, null, 0, null);
-            ViewBag.Products = new SelectList(products.Data, "Id", "Name");
+            ViewBag.Products = products.Data.ToList();
             return View();
         }
 
