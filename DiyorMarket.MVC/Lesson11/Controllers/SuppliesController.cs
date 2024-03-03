@@ -72,24 +72,24 @@ namespace Lesson11.Controllers
         public IActionResult Create()
         {
             var suppliers = GetAllSupplier(null);
-            ViewBag.Suppliers = new SelectList(suppliers, "Id", "FirstName");
+            ViewBag.Suppliers = suppliers.ToList();
             var products = _productDataStore.GetProducts(null, null, 0, null);
-            ViewBag.Products = new SelectList(products.Data, "Id", "Name");
+            ViewBag.Products = products.Data.ToList();
             return View();
         }
 
         [HttpPost]
-        public IActionResult Create(SupplyViewModel supplyViewModel)
+        public IActionResult Create([FromBody] SupplyViewModel supplyViewModel)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
-
             var supply = new Supply
             {
-                SupplyDate = supplyViewModel.Supply.SupplyDate,
-                SupplierId = supplyViewModel.Supply.SupplierId,
+                SupplyDate = supplyViewModel.Date,
+                SupplierId = supplyViewModel.SupplierId,
+                SupplyItems = supplyViewModel.SupplyItems
             };
             _supplyDataStore.CreateSupply(supply);
             
@@ -240,17 +240,13 @@ namespace Lesson11.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddSupplyItem(SupplyItem supplyItem)
+        public List<SupplyItem> AddSupplyItem(SupplyItem supplyItem)
         {
-            var supplyItems = TempData["SupplyItems"] as List<SupplyItem> ?? new List<SupplyItem>();
             supplyItems.Add(supplyItem);
 
-            TempData["SupplyItems"] = supplyItems;
+            ViewBag.SupplyItems = supplyItems;
 
-            return PartialView("_SupplyItemsPartial", supplyItems);
+            return supplyItems;
         }
-
-
-
     }
 }
