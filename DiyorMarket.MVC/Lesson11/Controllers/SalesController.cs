@@ -61,10 +61,17 @@ namespace Lesson11.Controllers
             {
                 return BadRequest();
             }
+            decimal totalDue = 0;
+
+            foreach(var item in saleViewModel.SaleItems)
+            {
+                totalDue += (item.Quantity * item.UnitPrice);
+            }
 
             var result = _saleDataStore.CreateSale(new Sale
             {
                 SaleDate = saleViewModel.Date,
+                TotalDue = totalDue,
                 CustomerId = saleViewModel.CustomerId,
                 SaleItems = saleViewModel.SaleItems,
             });
@@ -74,7 +81,7 @@ namespace Lesson11.Controllers
                 return BadRequest();
             }
 
-            return RedirectToAction("Details", new { id = result.Id });
+            return Json(new { redirectToUrl = Url.Action("Details", "Sales", new { id = result.Id }) });
         }
 
         public IActionResult Details(int id)

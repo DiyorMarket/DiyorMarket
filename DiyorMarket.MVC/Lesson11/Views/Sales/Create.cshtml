@@ -4,7 +4,6 @@
 @{
     ViewData["Title"] = "Create";
     Layout = "~/Views/Shared/_DataGridLayout.cshtml";
-    List<Product> products = ViewBag.Products;
 }
 
 <!-- Navigation link -->
@@ -22,9 +21,7 @@
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="d-flex justify-content-start">
         <form id="form-element" class="form-vertical">
-            <div class="form-group">
-                <ejs-datetimepicker id="sale-date" value="@DateTime.Now"></ejs-datetimepicker>
-            </div>
+            <ejs-datetimepicker id="sale-date" value="@DateTime.Now"></ejs-datetimepicker>
         </form>
         <div class="p-0 mr-5">
             <label class="control-label mt-2"></label>
@@ -39,7 +36,7 @@
             </ejs-combobox>
         </div>
         <div class="p-2">
-            <ejs-numerictextbox id="item-quantity" value="1" floatLabelType="Auto"></ejs-numerictextbox>
+            <ejs-numerictextbox id="item-quantity" value="1" min="1" floatLabelType="Auto"></ejs-numerictextbox>
         </div>
         <div class="p-2">
             <ejs-numerictextbox id="item-price" format="c2" floatLabelType="Auto"></ejs-numerictextbox>
@@ -105,9 +102,9 @@
         const items = grid.dataSource;
         const selectedDate = document.getElementById('sale-date').ej2_instances[0].value;
         const newSupply = {
-            SupplyItems: items,
+            SaleItems: items,
             Date: selectedDate,
-            supplierId: $("#customers-id").val()
+            CustomerId: $("#customers-id").val()
         };
         console.log(newSupply);
         $.ajax
@@ -117,13 +114,14 @@
                 data: JSON.stringify(newSupply),
                 contentType: "application/json",
                 dataType: 'JSON',
-                success: function (data) {
-                    document.getElementById('targetButton').onclick = function () {
-                        const dialog = document.getElementById("dialog").ej2_instances[0];
-                        dialog.show();
-                    }
+                success: function (response) {
+                    console.log('success: ');
+                    console.log(response);
+                    window.location.href = response.redirectToUrl;
                 },
                 error: function (data) {
+                    console.log(error);
+                    console.log(data);
                     alert('There was an error saving creating new supply! Please, try again.');
                 }
             });
@@ -142,7 +140,7 @@
                 inputElement.parentElement.parentElement.appendChild(errorElement);
             }
         };
-        const formObject = new ej.inputs.FormValidator('#form-element', options);
+        const formObject = new ej.inputs.FormValidator('#sale-date', options);
     });
 
     function dlgButtonClick() {
@@ -154,5 +152,6 @@
         const productsList = document.getElementById('products-list').ej2_instances[0];
         const selectedProduct = productsList.dataSource.find(el => el.Id == productsList.value);
         document.getElementById('item-price').ej2_instances[0].value = selectedProduct.SupplyPrice;
+        document.getElementById('item-quantity').ej2_instances[0].max = selectedProduct.QuantityInStock;
     }
 </script>
