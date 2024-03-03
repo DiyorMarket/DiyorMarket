@@ -72,7 +72,7 @@ namespace Lesson11.Controllers
         public IActionResult Create()
         {
             var suppliers = GetAllSupplier(null);
-            ViewBag.Suppliers = new SelectList(suppliers, "Id", "FirstName");
+            ViewBag.Suppliers = suppliers.ToList();
             var products = _productDataStore.GetProducts(null, null, 0, null);
             ViewBag.Products = products.Data.ToList();
             return View();

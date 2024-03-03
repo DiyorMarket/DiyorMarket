@@ -28,7 +28,9 @@
         </form>
         <div class="p-0 mr-5">
             <label class="control-label mt-2"></label>
-            <select id="supplier-id" class="form-control border border-dark" asp-for="SupplierId" asp-items="@ViewBag.Suppliers"></select>
+            <ejs-combobox id="supplier-id" autofill="true" dataSource="@ViewBag.Suppliers" placeholder="Select Supplier" popupHeight="230px">
+                <e-combobox-fields text="FirstName" value="Id"></e-combobox-fields>
+            </ejs-combobox>
         </div>
     </div>
     <div class="d-flex justify-content-start">
