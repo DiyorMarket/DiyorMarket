@@ -1,4 +1,4 @@
-﻿.preloader-wrapper{
+﻿.preloader-wrapper {
     position: fixed;
     top: 0;
     left: 0;
@@ -9,9 +9,10 @@
     align-items: center;
     justify-content: center;
     transition: all .4s ease;
+    z-index: 9999;
 }
 
-.fade-out-animation{
+.fade-out-animation {
     opacity: 0;
     visibility: hidden;
 }

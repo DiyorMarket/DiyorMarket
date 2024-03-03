@@ -13,8 +13,12 @@ namespace Lesson11.Controllers
             _store = store;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            ViewData["ShowSpinner"] = true;
+
+            await Task.Delay(2000);
+
             var dashboard = _store.GetDashboard();
 
             if (dashboard is null)
@@ -22,9 +26,9 @@ namespace Lesson11.Controllers
                 return BadRequest();
             }
 
-            ///Thread.Sleep(3000);
-
             SetViewBagProperties(dashboard);
+
+            ViewData["ShowSpinner"] = false;
 
             return View();
         }
