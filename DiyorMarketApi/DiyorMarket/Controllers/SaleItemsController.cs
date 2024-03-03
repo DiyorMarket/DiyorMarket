@@ -111,17 +111,18 @@ namespace DiyorMarket.Controllers
         {
             DataTable table = new DataTable();
             table.TableName = "Sales Data";
-            table.Columns.Add("Id", typeof(int));
+            table.Columns.Add("ProductName", typeof(string));
             table.Columns.Add("Quantity", typeof(int));
             table.Columns.Add("UnitPrice", typeof(decimal));
-            table.Columns.Add("SaleId", typeof(int));
+            table.Columns.Add("TotalDue", typeof(decimal));
 
             foreach (var saleitem in saleItemDtos)
             {
-                table.Rows.Add(saleitem.Id,
+                table.Rows.Add(
+                    saleitem.ProductName,
                     saleitem.Quantity,
                     saleitem.UnitPrice,
-                    saleitem.SaleId);
+                    saleitem.TotalDue);
             }
 
             return table;
