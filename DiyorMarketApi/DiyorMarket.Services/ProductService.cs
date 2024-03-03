@@ -93,7 +93,12 @@ namespace DiyorMarket.Services
 
         public IEnumerable<ProductDto> GetAllProducts()
         {
-            var products = _context.Products.ToList();
+            var products = _context.Products
+                .Include(x => x.Category)
+                .AsSplitQuery()
+                .OrderBy(x => x.Name)
+                .ThenBy(x => x.Category.Name)
+                .ToList();
 
             return _mapper.Map<IEnumerable<ProductDto>>(products) ?? Enumerable.Empty<ProductDto>();
         }

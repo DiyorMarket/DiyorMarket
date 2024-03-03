@@ -109,9 +109,12 @@ namespace Lesson11.Stores.Products
             }
         }
 
-        public Stream GetExportFile()
+        public Stream GetExportFile(string type)
         {
-            var response = _api.Get("products/export");
+            string url = type == "pdf" ?
+                "products/export/pdf" :
+                "products/export/xls";
+            var response = _api.Get(url);
             var stream = response.Content.ReadAsStream();
 
             return stream;
