@@ -1,7 +1,9 @@
 ﻿using ExcelDataReader;
 using Lesson11.Models;
 using Lesson11.Stores.Customers;
+using Lesson11.Stores.Products;
 using Lesson11.Stores.Sales;
+using Lesson11.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -10,12 +12,14 @@ namespace Lesson11.Controllers
     public class SalesController : Controller
     {
         private readonly ISaleDataStore _saleDataStore;
+        private readonly IProductDataStore _productDataStore;
         private readonly ICustomerDataStore _customersDataStore;
 
-        public SalesController(ISaleDataStore saleDataStore, ICustomerDataStore customersDataStore)
+        public SalesController(ISaleDataStore saleDataStore, ICustomerDataStore customersDataStore, IProductDataStore productDataStore)
         {
             _saleDataStore = saleDataStore ?? throw new ArgumentNullException(nameof(saleDataStore));
-            _customersDataStore = customersDataStore ?? throw new ArgumentNullException(nameof(customersDataStore)); ;
+            _customersDataStore = customersDataStore ?? throw new ArgumentNullException(nameof(customersDataStore));
+            _productDataStore = productDataStore ?? throw new ArgumentNullException(nameof(_productDataStore));
         }
 
         public IActionResult Index(string? searchString, int? customerId, DateTime? saleDate, int pageNumber)
@@ -45,11 +49,13 @@ namespace Lesson11.Controllers
         {
             var customers = GetAllCustomers(null);
             ViewBag.Customers = new SelectList(customers, "Id", "FullName");
+            var products = _productDataStore.GetProducts(null, null, 0, null);
+            ViewBag.Products = products.Data.ToList();
             return View();
         }
 
         [HttpPost]
-        public IActionResult Create(Sale sale)
+        public IActionResult Create([FromBody] SaleViewModel saleViewModel)
         {
             if (!ModelState.IsValid)
             {
@@ -58,8 +64,9 @@ namespace Lesson11.Controllers
 
             var result = _saleDataStore.CreateSale(new Sale
             {
-                SaleDate = sale.SaleDate,
-                CustomerId = sale.CustomerId
+                SaleDate = saleViewModel.Date,
+                CustomerId = saleViewModel.CustomerId,
+                SaleItems = saleViewModel.SaleItems,
             });
 
             if (result is null)
