@@ -20,38 +20,34 @@
 
 <div>
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <div class="d-flex justify-content-start">
-        <form id="form-element" class="form-vertical">
-            <div class="form-group">
-                <ejs-datetimepicker id="supply-date" value="@DateTime.Now"></ejs-datetimepicker>
-            </div>
-        </form>
-        <div class="p-0 mr-5">
-            <label class="control-label mt-2"></label>
+    <form class="d-flex justify-content-start gap-5">
+        <div style ="width: 310px">
+            <ejs-datetimepicker id="supply-date" value="@DateTime.Now"></ejs-datetimepicker>
+        </div>
+        <div>
             <ejs-combobox id="supplier-id" autofill="true" dataSource="@ViewBag.Suppliers" placeholder="Select Supplier" popupHeight="230px">
                 <e-combobox-fields text="FirstName" value="Id"></e-combobox-fields>
             </ejs-combobox>
         </div>
-    </div>
-    <div class="d-flex justify-content-start">
-        <div class="p-0 mr-5">
-            <label class="control-label mt-2"></label>
-            <ejs-combobox id="products-list" autofill="true" dataSource="@ViewBag.Products" change="onSelectedProductChanged" placeholder="Select a product" popupHeight="230px">
+    </form>
+    <form class="d-flex justify-content-start gap-5 mt-3 mb-3">
+        <div style="width: 310px">
+            <ejs-combobox id="products-list" autofill="true" dataSource="@ViewBag.Products" change="onSelectedProductChanged" placeholder="Select a product" popupHeight="230px" style="color: white;">
                 <e-combobox-fields text="Name" value="Id"></e-combobox-fields>
             </ejs-combobox>
         </div>
-        <div class="p-2">
+        <div style="width: 270px">
             <ejs-numerictextbox id="item-quantity" value="1" floatLabelType="Auto"></ejs-numerictextbox>
         </div>
-        <div class="p-2">
+        <div>
             <ejs-numerictextbox id="item-price" format="c2" floatLabelType="Auto"></ejs-numerictextbox>
         </div>
-        <div class="p-2">
+        <div>
             <button class="btn btn-outline-success mr-auto" type="button" id="addItem">
                 <i class="fa fa-plus"></i> Add
             </button>
         </div>
-    </div>
+    </form>
 
     <div class="form-group">
         <ejs-grid id="supply-items" asp-for="Supply.SupplyItems" toolbar="@(new List<string>() { "Edit", "Delete" })">
@@ -72,7 +68,7 @@
             Back
         </a>
         <button class="btn btn-success mr-auto" type="button" id="create">
-            <i class="fa fa-plus"></i> Create
+            <i class="fa fa-check-circle-fill"></i> Save
         </button>
     </div>
 </div>
