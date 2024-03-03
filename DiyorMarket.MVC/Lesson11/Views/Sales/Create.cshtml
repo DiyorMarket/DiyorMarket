@@ -105,9 +105,9 @@
         const items = grid.dataSource;
         const selectedDate = document.getElementById('sale-date').ej2_instances[0].value;
         const newSupply = {
-            SupplyItems: items,
+            SaleItems: items,
             Date: selectedDate,
-            supplierId: $("#customers-id").val()
+            CustomerId: $("#customers-id").val()
         };
         console.log(newSupply);
         $.ajax
