@@ -27,15 +27,15 @@ namespace Lesson11.Controllers
             supplyItems = new List<SupplyItem>();
         }
 
-        public IActionResult Index(string? searchString, int? supplierId, int pageNumber, int? prevSupplierId)
+        public IActionResult Index(string? searchString, int? supplierId, int pageNumber, int? prevSupplierId, DateTime? supplyDate)
         {
             if (supplierId == null && prevSupplierId != null)
             {
                 supplierId = prevSupplierId;
             }
 
-            var result = _supplyDataStore.GetSupplies(searchString, supplierId, pageNumber);
-            var supliers = GetAllSupplier(searchString);
+            var result = _supplyDataStore.GetSupplies(searchString, supplierId, pageNumber, supplyDate); 
+            var supliers = GetAllSupplier(searchString);  
 
             supliers.Insert(0, new Supplier
             {
