@@ -3,6 +3,7 @@ using Lesson11.Models;
 using Lesson11.Stores.User;
 using Lesson11.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Lesson11.Controllers
 {
@@ -15,15 +16,16 @@ namespace Lesson11.Controllers
         }
         public IActionResult Login()
         {
+           HttpContext.Response.Cookies.Delete("JwtToken");
+           return RedirectToAction("Index", "Auth");
+        }
+        public IActionResult Index()
+        {
             if (HttpContext.Request.Cookies.TryGetValue(Configurations.JwtToken, out _))
             {
                 return RedirectToAction("Index", "Dashboard");
             }
-            return RedirectToAction("Index", "Auth");
-        }
-        public IActionResult Index()
-        {
-            return View();
+            return View("Index");
         }
         [HttpPost]
         public IActionResult Index(LoginViewModel loginViewModel)
@@ -57,6 +59,7 @@ namespace Lesson11.Controllers
             ModelState.AddModelError("Password", "Incorrect password or login");
             return View(loginViewModel);
         }
+        
 
         public IActionResult Register()
         {

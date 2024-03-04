@@ -3,6 +3,7 @@ using Lesson11.Models;
 using Lesson11.Stores.Products;
 using Lesson11.Stores.Suppliers;
 using Lesson11.Stores.Supplies;
+using Lesson11.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -22,17 +23,18 @@ namespace Lesson11.Controllers
             _supplyDataStore = supplyDataStore ?? throw new ArgumentNullException(nameof(supplyDataStore));
             _productDataStore = productDataStore ?? throw new ArgumentNullException(nameof(productDataStore));
             _supplierDataStore = supplierDataStore ?? throw new ArgumentNullException(nameof(supplierDataStore));
+            supplyItems = new List<SupplyItem>();
         }
 
-        public IActionResult Index(string? searchString, int? supplierId, int pageNumber, int? prevSupplierId)
+        public IActionResult Index(string? searchString, int? supplierId, int pageNumber, int? prevSupplierId, DateTime? supplyDate)
         {
             if (supplierId == null && prevSupplierId != null)
             {
                 supplierId = prevSupplierId;
             }
 
-            var result = _supplyDataStore.GetSupplies(searchString, supplierId, pageNumber);
-            var supliers = GetAllSupplier(searchString);
+            var result = _supplyDataStore.GetSupplies(searchString, supplierId, pageNumber, supplyDate); 
+            var supliers = GetAllSupplier(searchString);  
 
             supliers.Insert(0, new Supplier
             {
@@ -69,32 +71,28 @@ namespace Lesson11.Controllers
         public IActionResult Create()
         {
             var suppliers = GetAllSupplier(null);
-            ViewBag.Suppliers = new SelectList(suppliers, "Id", "FirstName");
+            ViewBag.Suppliers = suppliers.ToList();
             var products = _productDataStore.GetProducts(null, null, 0, null);
-            ViewBag.Products = new SelectList(products.Data, "Id", "Name");
+            ViewBag.Products = products.Data.ToList();
             return View();
         }
 
         [HttpPost]
-        public IActionResult Create(Supply supply)
+        public IActionResult Create([FromBody] SupplyViewModel supplyViewModel)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
-
-            var result = _supplyDataStore.CreateSupply(new Supply
+            var supply = new Supply
             {
-                SupplyDate = supply.SupplyDate,
-                SupplierId = supply.SupplierId,
-            });
-
-            if (result is null)
-            {
-                return BadRequest();
-            }
-
-            return RedirectToAction("Details", new { id = result.Id });
+                SupplyDate = supplyViewModel.Date,
+                SupplierId = supplyViewModel.SupplierId,
+                SupplyItems = supplyViewModel.SupplyItems
+            };
+            _supplyDataStore.CreateSupply(supply);
+            
+            return RedirectToAction("Details", new { id = supply.Id });
         }
 
         public IActionResult Details(int id)
@@ -240,10 +238,12 @@ namespace Lesson11.Controllers
             return categories;
         }
 
-        [ActionName("AddSupplyItems")]
-        public IEnumerable<SupplyItem> AddSupplyItems(SupplyItem supplyItem)
+        [HttpPost]
+        public List<SupplyItem> AddSupplyItem(SupplyItem supplyItem)
         {
             supplyItems.Add(supplyItem);
+
+            ViewBag.SupplyItems = supplyItems;
 
             return supplyItems;
         }

@@ -13,7 +13,7 @@
 <div class="container">
     <form asp-controller="Supplies" asp-action="Index" class="mb-2">
         <input type="hidden" name="prevsupplierId" value="@ViewBag.SelectedSupplier?.Id" />
-        <div class="row" style="margin-top: 50px;">
+        <div class="row" style="margin-top: 50px; margin-right: 10px;">
             <div class="d-flex flex-row align-items-start gap-4">
                 <!-- Search -->
                 <div class="col-md-3 mb-4">
@@ -35,7 +35,9 @@
                         {
                             <option value="@supplier.Id" selected="@(supplier.Id == ViewBag.supplierId)">
                                 @supplier.FirstName
-                            </option>
+                           </option>
+                           
+
                         }
                     </select>
                 </div>

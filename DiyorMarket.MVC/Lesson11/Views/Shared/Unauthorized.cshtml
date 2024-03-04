@@ -1,0 +1,44 @@
+﻿@{
+    Layout = "~/Views/Shared/_ErrorPageLayout.cshtml";
+}
+
+<style>
+    .container {
+        position: relative;
+        width: 100%;
+        max-height: 91vh;
+    }
+
+    .responsive-image {
+        width: 100%;
+        max-height: 91vh;
+        height: auto;
+        margin: auto;
+        display: block;
+    }
+
+    .overlay-button {
+        position: absolute;
+        bottom: 2%;
+        right: 2%;
+        background-color: gray;
+        color: whitesmoke;
+        padding: 1% 2%;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        z-index: 2;
+        font-size: 1.8vw;
+    }
+</style>
+
+<div class="container">
+    <img src="~/images/401-Unauthorized.png" class="responsive-image" alt="401" />
+    <button class="overlay-button" onclick="redirectToDashboard()">Login</button>
+</div>
+
+<script>
+    function redirectToDashboard() {
+        window.location.href = "/Auth/index";
+    }
+</script>
