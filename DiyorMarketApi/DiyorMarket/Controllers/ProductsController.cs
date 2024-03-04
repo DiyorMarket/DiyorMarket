@@ -41,36 +41,37 @@ namespace DiyorMarketApi.Controllers
             return Ok(products);
         }
 
-        [HttpGet("export")]
+        [HttpGet("export/xls")]
         public ActionResult ExportProducts()
         {
-            var category = _productService.GetAllProducts();
+            var products = _productService.GetAllProducts();
 
-            using XLWorkbook wb = new XLWorkbook();
-            var sheet1 = wb.AddWorksheet(GetProductsDataTable(category), "Products");
-
-            sheet1.Column(1).Style.Font.FontColor = XLColor.Red;
-
-            sheet1.Columns(2, 4).Style.Font.FontColor = XLColor.Blue;
-
+            // 2 sections
+            // 1 color
+            // 2 size
+            using XLWorkbook wb = new();
+            var sheet1 = wb.AddWorksheet(GetProductsDataTable(products), "Products");
+            sheet1.Columns(1, 3).Style.Font.FontColor = XLColor.Black;
+            sheet1.Column(1).Width = 10;
+            sheet1.Columns(2, 3).Width = 25;
+            sheet1.Columns(4, 5).Style.Font.FontColor = XLColor.Blue;
+            sheet1.Columns(4, 5).Width = 15;
+            sheet1.Columns(6, 7).Width = 20;
+            sheet1.Columns(6, 7).Style.Font.FontColor = XLColor.Black;
             sheet1.Row(1).CellsUsed().Style.Fill.BackgroundColor = XLColor.Black;
-            //sheet1.Row(1).Cells(1,3).Style.Fill.BackgroundColor = XLColor.Yellow;
             sheet1.Row(1).Style.Font.FontColor = XLColor.White;
-
+            sheet1.Row(1).Style.Font.FontSize = 16;
             sheet1.Row(1).Style.Font.Bold = true;
             sheet1.Row(1).Style.Font.Shadow = true;
-            sheet1.Row(1).Style.Font.Underline = XLFontUnderlineValues.Single;
             sheet1.Row(1).Style.Font.VerticalAlignment = XLFontVerticalTextAlignmentValues.Superscript;
-            sheet1.Row(1).Style.Font.Italic = true;
+            sheet1.Row(1).Style.Font.Italic = false;
 
-            //sheet1.Rows(2, 3).Style.Font.FontColor = XLColor.AshGrey;
-
-            using MemoryStream ms = new MemoryStream();
+            using MemoryStream ms = new();
             wb.SaveAs(ms);
             return File(ms.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Products.xlsx");
         }
 
-        [HttpGet("exportPDF")]
+        [HttpGet("export/pdf")]
         public ActionResult ExportProductsPDF()
         {
             var products = _productService.GetAllProducts();
@@ -207,17 +208,19 @@ namespace DiyorMarketApi.Controllers
             _productService.DeleteProduct(id);
         }
 
-        private DataTable GetProductsDataTable(IEnumerable<ProductDto> productDtos)
+        private static DataTable GetProductsDataTable(IEnumerable<ProductDto> productDtos)
         {
-            DataTable table = new DataTable();
-            table.TableName = "Products Data";
+            DataTable table = new()
+            {
+                TableName = "Products"
+            };
             table.Columns.Add("Id", typeof(int));
             table.Columns.Add("Name", typeof(string));
             table.Columns.Add("Description", typeof(string));
-            table.Columns.Add("SalePrice", typeof(decimal));
-            table.Columns.Add("SupplyPrice", typeof(decimal));
-            table.Columns.Add("ExpireDate", typeof(DateTime));
-            table.Columns.Add("CategoryName", typeof(string));
+            table.Columns.Add("Sale Price", typeof(decimal));
+            table.Columns.Add("Supply Price", typeof(decimal));
+            table.Columns.Add("Expire Date", typeof(DateTime));
+            table.Columns.Add("Category", typeof(string));
 
             foreach (var product in productDtos)
             {
@@ -227,7 +230,7 @@ namespace DiyorMarketApi.Controllers
                     product.SalePrice, 
                     product.SupplyPrice, 
                     product.ExpireDate,
-                    product.Category != null ? product.Category.Name : null);
+                    product.Category?.Name);
             }
 
             return table;

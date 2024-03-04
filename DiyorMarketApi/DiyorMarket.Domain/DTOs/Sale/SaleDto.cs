@@ -8,5 +8,4 @@ namespace DiyorMarket.Domain.DTOs.Sale
         int CustomerId,
         decimal TotalDue,
         ICollection<SaleItemDto> SaleItems);
-
  }
