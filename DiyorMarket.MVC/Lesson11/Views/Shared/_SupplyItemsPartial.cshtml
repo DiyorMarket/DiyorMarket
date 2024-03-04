@@ -1,0 +1,10 @@
+﻿@model List<Lesson11.Models.SupplyItem>
+
+<ejs-grid id="supplyItems-list" dataSource="@Model" load="load">
+    <e-grid-editsettings allowAdding="true" allowDeleting="true" allowEditing="true" mode="Normal"></e-grid-editsettings>
+    <e-grid-columns>
+        <e-grid-column headerText="Product Name" field="ProductId" type="string"></e-grid-column>
+        <e-grid-column headerText="Quantity" field="Quantity" type="number" format="C2"></e-grid-column>
+        <e-grid-column headerText="UnitPrice" field="UnitPrice" type="string"></e-grid-column>
+    </e-grid-columns>
+</ejs-grid>

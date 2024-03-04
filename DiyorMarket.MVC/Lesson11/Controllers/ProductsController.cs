@@ -101,11 +101,12 @@ public class ProductsController : Controller
         return View(product);
     }
 
-    public IActionResult Download()
+    public IActionResult Download(string type)
     {
-        var result = _productDataStore.GetExportFile();
+        var result = _productDataStore.GetExportFile(type);
+        (string format, string fileName) = GetFileDetails(type);
 
-        return File(result, "application/xls", "Products.xls");
+        return File(result, format, fileName);
     }
 
     public IActionResult Edit(int id)
@@ -163,21 +164,6 @@ public class ProductsController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    private List<Category> GetAllCategories()
-    {
-        int number = 1;
-        var categoryResponse = _categoryDataStore.GetCategories(null, number);
-        var categories = categoryResponse.Data.ToList();
-
-
-        for (int i = 1; i <= categoryResponse.TotalPages; i++)
-        {
-            categoryResponse = _categoryDataStore.GetCategories(null, ++number);
-            categories.AddRange(categoryResponse.Data.ToList());
-        }
-
-        return categories;
-    }
     public IActionResult Upload()
     {
         ViewBag.FileUploaded = false;
@@ -199,6 +185,40 @@ public class ProductsController : Controller
         ViewBag.FileUploaded = true;
 
         return View();
+    }
+
+    private static (string Format, string Name) GetFileDetails(string type)
+    {
+        string format = type switch
+        {
+            "xls" => "application/xls",
+            "pdf" => "application/pdf",
+            _ => "application/xls"
+        };
+        string name = type switch
+        {
+            "xls" => "Products.xls",
+            "pdf" => "Products.pdf",
+            _ => "Products.xls"
+        };
+
+        return (format, name);
+    }
+
+    private List<Category> GetAllCategories()
+    {
+        int number = 1;
+        var categoryResponse = _categoryDataStore.GetCategories(null, number);
+        var categories = categoryResponse.Data.ToList();
+
+
+        for (int i = 1; i <= categoryResponse.TotalPages; i++)
+        {
+            categoryResponse = _categoryDataStore.GetCategories(null, ++number);
+            categories.AddRange(categoryResponse.Data.ToList());
+        }
+
+        return categories;
     }
 
     private static List<Product> DeserializeFile(IFormFile file)
