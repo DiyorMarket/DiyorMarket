@@ -17,10 +17,10 @@ namespace Lesson11.Controllers
 
         public IActionResult Index()
         {
-            if (HttpContext.Request.Cookies.TryGetValue(Configurations.JwtToken, out _))
-            {
-                return RedirectToAction("Index", "Dashboard");
-            }
+            //if (HttpContext.Request.Cookies.TryGetValue(Configurations.JwtToken, out _))
+            //{
+            //    return RedirectToAction("Index", "Dashboard");
+            //}
 
             return View();
         }

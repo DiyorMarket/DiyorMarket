@@ -38,7 +38,7 @@ namespace Lesson11
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Auth}/{action=index}/{id?}");
+                pattern: "{controller=Home}/{action=Unauthorized}/{id?}");
 
             app.Run();
         }
