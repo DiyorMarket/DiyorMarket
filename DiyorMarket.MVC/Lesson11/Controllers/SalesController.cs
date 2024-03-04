@@ -48,7 +48,7 @@ namespace Lesson11.Controllers
         public IActionResult Create()
         {
             var customers = GetAllCustomers(null);
-            ViewBag.Customers = new SelectList(customers, "Id", "FullName");
+            ViewBag.Customers = customers.ToList();
             var products = _productDataStore.GetProducts(null, null, 0, null);
             ViewBag.Products = products.Data.ToList();
             return View();
