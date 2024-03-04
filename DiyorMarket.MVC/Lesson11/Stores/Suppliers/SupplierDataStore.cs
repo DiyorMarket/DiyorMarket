@@ -22,7 +22,7 @@ namespace Lesson11.Stores.Suppliers
             {
                 query.Append($"searchString={searchString}&");
             }
-            if (pageNumber != 0) 
+            if (pageNumber != 0)
             {
                 query.Append($"pageNumber={pageNumber}");
             }

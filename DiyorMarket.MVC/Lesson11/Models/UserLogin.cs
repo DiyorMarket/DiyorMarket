@@ -1,8 +1,4 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace Lesson11.Models
+﻿namespace Lesson11.Models
 {
     public class UserLogin
     {

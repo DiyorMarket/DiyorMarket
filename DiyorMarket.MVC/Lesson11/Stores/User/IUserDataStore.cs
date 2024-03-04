@@ -1,6 +1,4 @@
-﻿using Lesson11.ViewModels;
-using Lesson11.Models;
-using Lesson11.Response;
+﻿using Lesson11.Models;
 
 namespace Lesson11.Stores.User
 {

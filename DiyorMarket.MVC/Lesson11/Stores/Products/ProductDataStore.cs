@@ -20,8 +20,8 @@ namespace Lesson11.Stores.Products
         public GetProductResponse? GetProducts(string? searchString, int? categoryId, int pageNumber, DateTime? expireDate)
         {
             StringBuilder query = new("");
-            
-            if(expireDate is not null)
+
+            if (expireDate is not null)
             {
                 query.Append($"expireDate={expireDate.Value.ToString("MM/dd/yyyy")}&");
             }
@@ -36,7 +36,7 @@ namespace Lesson11.Stores.Products
                 query.Append($"categoryId={categoryId}&");
             }
 
-            if(pageNumber != 0)
+            if (pageNumber != 0)
             {
                 query.Append($"pageNumber={pageNumber}");
             }

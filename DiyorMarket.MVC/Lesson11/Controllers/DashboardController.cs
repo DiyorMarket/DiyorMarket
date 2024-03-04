@@ -22,7 +22,6 @@ namespace Lesson11.Controllers
                 return BadRequest();
             }
 
-
             SetViewBagProperties(dashboard);
 
             return View();

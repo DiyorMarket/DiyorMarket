@@ -53,7 +53,7 @@ namespace Lesson11.Controllers
             var customersSaleItems = new List<CustomerSaleItemsViewModels>();
             var sale = _saleDataStore.GetSale(id);
 
-            foreach(var item in salesSaleItems)
+            foreach (var item in salesSaleItems)
             {
                 customersSaleItems.Add(new CustomerSaleItemsViewModels()
                 {
@@ -165,6 +165,7 @@ namespace Lesson11.Controllers
             ViewBag.FileUploaded = false;
             return View();
         }
+
         [HttpPost]
         public IActionResult Upload(IFormFile file)
         {

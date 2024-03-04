@@ -158,7 +158,7 @@ namespace Lesson11.Controllers
                     FirstName = reader.GetValue(0)?.ToString(),
                     LastName = reader.GetValue(1)?.ToString(),
                     PhoneNumber = reader.GetValue(2)?.ToString(),
-                    Company = reader.GetValue(3)?.ToString()    
+                    Company = reader.GetValue(3)?.ToString()
                 });
             }
 

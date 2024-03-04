@@ -17,7 +17,7 @@ namespace Lesson11.Stores.Supplies
 
         public GetSupplyResponse? GetSupplies(string? searchString, int? supplierId, int pageNumber, DateTime? supplyDate)
         {
-			StringBuilder query = new("");
+            StringBuilder query = new("");
 
             if (!string.IsNullOrWhiteSpace(searchString))
             {
