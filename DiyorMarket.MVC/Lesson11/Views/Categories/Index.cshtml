@@ -12,24 +12,20 @@
         <li class="breadcrumb-item active" aria-current="page">Categories List</li>
     </ol>
 </nav>
-
-<div class="container mt-4">
-    <form asp-controller="Categories" asp-action="Index">
-        <input type="hidden"/>
-        <div class="container" style="margin-top: 50px;">
-            <div class="row row-cols-sm-1 align-items-start">
-                <div class="d-flex flex-row justify-content-between gap-4" >
-                    <!-- Search -->
-                    <div class="col-md-5 mb-4 ml-2 mr-10">
-                        <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Search category..." name="searchString" value="@ViewBag.SearchString">
-                            <div class="input-group-append">
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fa fa-search"></i> Search
-                                </button>
-                            </div>
-                        </div>
+    <form asp-controller="Categories" asp-action="Index" class="mb-2">
+    <div class="row" style="margin-top: 60px;">
+        <div class="d-flex justify-content-between">
+            <!-- Search -->
+            <div class="col-md-4 mb-4">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search categories..." name="searchString" id="searchString" value="@ViewBag.SearchString">
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa fa-search"></i> Search
+                        </button>
                     </div>
+                </div>
+            </div>
                     <!-- Action Buttons -->
                     <div class="d-flex flex-row col-md-7 mb-4 justify-content-end" style="gap: 15px; margin-right: 10px">
                         <a class="btn btn-outline-info" asp-action="download">
