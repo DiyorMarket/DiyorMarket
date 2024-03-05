@@ -12,7 +12,7 @@
         <li class="breadcrumb-item active" aria-current="page">Sales List</li>
     </ol>
 </nav>
-<form asp-controller="Sales" asp-action="Index" class="mb-2">
+<form asp-controller="Sales" asp-action="Index">
     <input type="hidden" name="prevCategoryId" value="@ViewBag.SelectedCategory?.Id" />
     <div class="row" style="margin-top: 50px;">
         <div class="d-flex flex-row align-items-start gap-4">
@@ -43,7 +43,7 @@
                 <input type="date" name="saleDate" class="form-control">
             </div>
             <!-- Action Buttons -->
-            <div class="d-flex" style="gap: 15px; margin-left:auto">
+            <div class="d-flex mb-4" style="gap: 15px; margin-left:auto;">
                 <div class="dropdown">
                     <button class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="fa-solid fa-download"></i> Download
