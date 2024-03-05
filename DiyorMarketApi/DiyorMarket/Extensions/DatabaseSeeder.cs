@@ -73,7 +73,9 @@ namespace DiyorMarket.Extensions
 
                 for (int i = 0; i < productsCount; i++)
                 {
+                    var quantityInStock=new Random().Next(5, 10);
                     var productName = _faker.Commerce.ProductName().FirstLetterToUpper();
+                    
                     int attempts = 0;
 
                     while (productNames.Contains(productName) && attempts < 100)
@@ -93,6 +95,7 @@ namespace DiyorMarket.Extensions
                         Description = _faker.Commerce.ProductDescription(),
                         Price = _faker.Random.Decimal(10_000, 200_000),
                         ExpireDate = _faker.Date.Between(DateTime.Now.AddYears(-3), DateTime.Now),
+                        QuantityInStock=quantityInStock,
                         CategoryId = category.Id,
                     });
                 }
@@ -247,7 +250,7 @@ namespace DiyorMarket.Extensions
         }
         private static void EditPriceForAllEntities(DiyorMarketDbContext context)
         {
-            var products=context.Products.ToList();
+            var products = context.Products.ToList();
             if (products[1].Price >= 20_000)
             {
                 foreach (var product in products)
@@ -273,6 +276,5 @@ namespace DiyorMarket.Extensions
                 context.SaveChanges();
             }
         }
-
     }
 }
