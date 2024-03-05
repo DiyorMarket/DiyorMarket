@@ -46,8 +46,8 @@ namespace DiyorMarketApi.Controllers
         {
             var products = _productService.GetAllProducts();
             byte[] data = GenerateExcle(products);
-            
-            return File(data, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Products.xls");
+
+            return File(data, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Products.xlsx");
         }
 
         [HttpGet("export/pdf")]
