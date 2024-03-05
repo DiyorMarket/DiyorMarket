@@ -3,7 +3,6 @@ using Lesson11.Models;
 using Lesson11.Stores.User;
 using Lesson11.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 
 namespace Lesson11.Controllers
 {
