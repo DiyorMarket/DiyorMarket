@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Syncfusion.Drawing;
 using Syncfusion.Pdf;
-using Syncfusion.Pdf.Graphics;
 using Syncfusion.Pdf.Grid;
 using System.Data;
 
@@ -63,20 +62,14 @@ namespace DiyorMarketApi.Controllers
 
             PdfGrid pdfGrid = new PdfGrid();
 
-            List<object> data = new List<object>();
-
             var categories = _categoryService.GetAllCategories();
-
-            foreach (var category in categories)
-            {
-                data.Add(new { ID = category.Id, Name = category.Name, NumberOfProduct = category.NumberOfProduct });
-            }
+            List<object> data = ConvertCategoriesToData(categories);
 
             pdfGrid.DataSource = data;
 
             pdfGrid.ApplyBuiltinStyle(PdfGridBuiltinStyle.GridTable4Accent1);
 
-            pdfGrid.Draw(page, new Syncfusion.Drawing.PointF(10, 10));
+            pdfGrid.Draw(page, new PointF(10, 10));
 
             MemoryStream stream = new MemoryStream();
             document.Save(stream);
@@ -150,7 +143,17 @@ namespace DiyorMarketApi.Controllers
 
             return ms.ToArray();
         }
+        private List<object> ConvertCategoriesToData(IEnumerable<CategoryDto> categories)
+        {
+            List<object> data = new List<object>();
 
+            foreach (var category in categories)
+            {
+                data.Add(new { ID = category.Id, category.Name, category.NumberOfProduct });
+            }
+
+            return data;
+        }
         private static DataTable GetCategoriesDataTable(IEnumerable<CategoryDto> categories)
         {
             DataTable table = new DataTable();
