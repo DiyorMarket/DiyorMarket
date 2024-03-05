@@ -12,41 +12,38 @@
         <li class="breadcrumb-item active" aria-current="page">Sales List</li>
     </ol>
 </nav>
-    <form asp-controller="Sales" asp-action="Index" class="mb-2">
-        <input type="hidden" name="prevCategoryId" value="@ViewBag.SelectedCategory?.Id" />
+<form asp-controller="Sales" asp-action="Index" class="mb-2">
+    <input type="hidden" name="prevCategoryId" value="@ViewBag.SelectedCategory?.Id" />
     <div class="row" style="margin-top: 50px;">
-            <div class="d-flex flex-row align-items-start gap-4">
-                <!-- Search -->
-                <div class="col-md-3 mb-4">
-                    <div class="input-group">
-                        <input type="hidden" name="prevCategoryId" value="@ViewBag.SelectedCategory?.Id" />
-                        <input type="text" class="form-control" placeholder="Search sales..." name="searchString" value="@ViewBag.SearchString">
-                        <div class="input-group-append">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fa fa-search"></i>
-                            </button>
-                        </div>
+        <div class="d-flex flex-row align-items-start gap-4">
+            <!-- Search -->
+            <div class="col-md-3 mb-4">
+                <div class="input-group">
+                    <input type="hidden" name="prevCategoryId" value="@ViewBag.SelectedCategory?.Id" />
+                    <input type="text" class="form-control" placeholder="Search sales..." name="searchString" value="@ViewBag.SearchString">
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa fa-search"></i>
+                        </button>
                     </div>
                 </div>
-                <!-- Filter -->
-                <div class="col-md-3">
-                    <select class="form-control" name="customerId">
-                        <option value="" selected disabled>  Select Customer </option>
-                        @foreach (var customer in ViewBag.Customers)
-                        {
-                            <option value="@customer.Id">@customer.FullName</option>
-                        }
-                    </select>
-                </div>
-                <!-- Date -->
-                <div class="col-md-2">
-                    <input type="date" name="saleDate" class="form-control">
-                </div>
-                <!-- Action Buttons -->
-            <div class="d-flex flex-row-reverse col-md-4 mb-4" style="gap: 15px;">
-                <a class="btn btn-success" style="margin-right: 100px;" asp-action="create">
-                    <i class="fa fa-plus"></i> Create
-                </a>
+            </div>
+            <!-- Filter -->
+            <div class="col-md-3">
+                <select class="form-control" name="customerId">
+                    <option value="" selected disabled>  Select Customer </option>
+                    @foreach (var customer in ViewBag.Customers)
+                    {
+                        <option value="@customer.Id">@customer.FullName</option>
+                    }
+                </select>
+            </div>
+            <!-- Date -->
+            <div class="col-md-2">
+                <input type="date" name="saleDate" class="form-control">
+            </div>
+            <!-- Action Buttons -->
+            <div class="d-flex justify-content-end col-md-4 mb-4" style="gap: 15px;">
                 <div class="dropdown">
                     <button class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="fa-solid fa-download"></i> Download
@@ -60,65 +57,68 @@
                         </a>
                     </div>
                 </div>
+                <a class="btn btn-success" asp-action="create">
+                    <i class="fa fa-plus"></i> Create
+                </a>
             </div>
-            </div>
-        </div>
-    </form>
-
-    <div class="row">
-        <div class="col-12">
-                <ejs-grid id="products-list"
-                    dataSource="@ViewBag.Sales"
-                    gridLines="Vertical"
-                    allowSorting="true">
-                <e-grid-columns>
-                    <e-grid-column headerText="Id" field="Id" template="#template" typeof="text"></e-grid-column>
-                    <e-grid-column headerText="Sale Date" field="SaleDate" format="dd/MM/yyyy, HH:mm:ss" typeof="text"></e-grid-column>
-                    <e-grid-column headerText="Total price" field="TotalDue" format="C2" typeof="text"></e-grid-column>
-                    <e-grid-column headerText="Customer" field="Customer.FullName" typeof="text"></e-grid-column>
-                </e-grid-columns>
-            </ejs-grid>
         </div>
     </div>
+</form>
+
+<div class="row">
+    <div class="col-12">
+        <ejs-grid id="products-list"
+                  dataSource="@ViewBag.Sales"
+                  gridLines="Vertical"
+                  allowSorting="true">
+            <e-grid-columns>
+                <e-grid-column headerText="Id" field="Id" template="#template" typeof="text"></e-grid-column>
+                <e-grid-column headerText="Sale Date" field="SaleDate" format="dd/MM/yyyy, HH:mm:ss" typeof="text"></e-grid-column>
+                <e-grid-column headerText="Total price" field="TotalDue" format="C2" typeof="text"></e-grid-column>
+                <e-grid-column headerText="Customer" field="Customer.FullName" typeof="text"></e-grid-column>
+            </e-grid-columns>
+        </ejs-grid>
+    </div>
+</div>
 <script id="template" type="text/x-template">
     <div>
         <a rel='nofollow' href="sales/Details?Id=${Id}">${Id}</a>
     </div>
 </script>
-    @* pagination *@
-    <div class="d-flex justify-content-between mt-3 mb-3">
-        <div>
-            @if (ViewBag.HasPreviousPage)
-            {
-                <a class="btn btn-outline-primary rounded-left" href="@Url.Action("Index", new { pageNumber = 1 })">&lt;&lt;</a>
-            }
+@* pagination *@
+<div class="d-flex justify-content-between mt-3 mb-3">
+    <div>
+        @if (ViewBag.HasPreviousPage)
+        {
+            <a class="btn btn-outline-primary rounded-left" href="@Url.Action("Index", new { pageNumber = 1 })">&lt;&lt;</a>
+        }
 
-            @if (ViewBag.HasPreviousPage)
-            {
-                <a class="btn btn-outline-primary rounded-right" href="@Url.Action("Index", new { pageNumber = ViewBag.CurrentPage - 1})">@(@ViewBag.CurrentPage - 1)</a>
-            }
+        @if (ViewBag.HasPreviousPage)
+        {
+            <a class="btn btn-outline-primary rounded-right" href="@Url.Action("Index", new { pageNumber = ViewBag.CurrentPage - 1})">@(@ViewBag.CurrentPage - 1)</a>
+        }
 
-            <button type="button" class="btn btn-primary rounded-right" disabled>@ViewBag.CurrentPage</button>
+        <button type="button" class="btn btn-primary rounded-right" disabled>@ViewBag.CurrentPage</button>
 
-            @if (ViewBag.HasNextPage)
-            {
-                <a class="btn btn-outline-primary rounded-right" href="@Url.Action("Index", new { pageNumber = ViewBag.CurrentPage + 1})">@(@ViewBag.CurrentPage + 1)</a>
-            }
+        @if (ViewBag.HasNextPage)
+        {
+            <a class="btn btn-outline-primary rounded-right" href="@Url.Action("Index", new { pageNumber = ViewBag.CurrentPage + 1})">@(@ViewBag.CurrentPage + 1)</a>
+        }
 
-            @if (ViewBag.CurrentPage <= 1)
-            {
-                <a class="btn btn-outline-primary rounded-right" href="@Url.Action("Index", new { pageNumber = ViewBag.CurrentPage + 2})">@(@ViewBag.CurrentPage + 2)</a>
-            }
+        @if (ViewBag.CurrentPage <= 1)
+        {
+            <a class="btn btn-outline-primary rounded-right" href="@Url.Action("Index", new { pageNumber = ViewBag.CurrentPage + 2})">@(@ViewBag.CurrentPage + 2)</a>
+        }
 
-            @if (ViewBag.HasNextPage)
-            {
-                <a class="btn btn-outline-primary rounded-right" href="@Url.Action("Index", new { pageNumber = ViewBag.PageCount })">&gt;&gt;</a>
-            }
-        </div>
-        <div class="p-2">
-            <p class="h6">@ViewBag.CurrentPage of @ViewBag.PageCount pages (@ViewBag.TotalCount items)</p>
-        </div>
+        @if (ViewBag.HasNextPage)
+        {
+            <a class="btn btn-outline-primary rounded-right" href="@Url.Action("Index", new { pageNumber = ViewBag.PageCount })">&gt;&gt;</a>
+        }
     </div>
+    <div class="p-2">
+        <p class="h6">@ViewBag.CurrentPage of @ViewBag.PageCount pages (@ViewBag.TotalCount items)</p>
+    </div>
+</div>
 
 <script id="template" type="text/x-template">
     <div>
