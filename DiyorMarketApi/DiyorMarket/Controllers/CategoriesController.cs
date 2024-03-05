@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Syncfusion.Drawing;
 using Syncfusion.Pdf;
 using Syncfusion.Pdf.Graphics;
+using Syncfusion.Pdf.Grid;
 using System.Data;
 
 
@@ -58,22 +59,27 @@ namespace DiyorMarketApi.Controllers
         public IActionResult CreatePDFDocument()
         {
             PdfDocument document = new PdfDocument();
-
-            var category = _categoryService.GetAllCategories();
-
             PdfPage page = document.Pages.Add();
 
-            PdfGraphics graphics = page.Graphics;
+            PdfGrid pdfGrid = new PdfGrid();
 
-            PdfFont font = new PdfStandardFont(PdfFontFamily.Helvetica, 20);
+            List<object> data = new List<object>();
 
-            string categories = ConvertCategoriesToString(category);
+            var categories = _categoryService.GetAllCategories();
 
-            graphics.DrawString(categories, font, PdfBrushes.Black, new PointF(0,0));
+            foreach (var category in categories)
+            {
+                data.Add(new { ID = category.Id, Name = category.Name, NumberOfProduct = category.NumberOfProduct });
+            }
+
+            pdfGrid.DataSource = data;
+
+            pdfGrid.ApplyBuiltinStyle(PdfGridBuiltinStyle.GridTable4Accent1);
+
+            pdfGrid.Draw(page, new Syncfusion.Drawing.PointF(10, 10));
 
             MemoryStream stream = new MemoryStream();
             document.Save(stream);
-
             stream.Position = 0;
 
             string contentType = "application/pdf";
@@ -161,11 +167,5 @@ namespace DiyorMarketApi.Controllers
             return table;  
         }
 
-        private string ConvertCategoriesToString(IEnumerable<CategoryDto> categories)
-        {
-            var categoryInfo = categories.Select(c => $"{c.Id}: {c.Name}: {c.NumberOfProduct}");
-
-            return string.Join(Environment.NewLine, categoryInfo);
-        }
     }
 }
