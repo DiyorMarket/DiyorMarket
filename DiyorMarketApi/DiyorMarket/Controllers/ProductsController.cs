@@ -5,7 +5,6 @@ using DiyorMarket.Domain.DTOs.Product;
 using DiyorMarket.Domain.Entities;
 using DiyorMarket.Domain.Interfaces.Services;
 using DiyorMarket.ResourceParameters;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using PdfSharpCore.Drawing;
@@ -41,7 +40,7 @@ namespace DiyorMarketApi.Controllers
             return Ok(products);
         }
 
-        [HttpGet("export")]
+        [HttpGet("export/xls")]
         public ActionResult ExportProducts()
         {
             var products = _productService.GetAllProducts();
@@ -50,7 +49,7 @@ namespace DiyorMarketApi.Controllers
             return File(data, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Products.xlsx");
         }
 
-        [HttpGet("exportPDF")]
+        [HttpGet("export/pdf")]
         public ActionResult ExportProductsPDF()
         {
             var products = _productService.GetAllProducts();
