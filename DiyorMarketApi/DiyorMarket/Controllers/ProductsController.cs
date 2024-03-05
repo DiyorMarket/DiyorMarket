@@ -45,30 +45,9 @@ namespace DiyorMarketApi.Controllers
         public ActionResult ExportProducts()
         {
             var products = _productService.GetAllProducts();
-
-            // 2 sections
-            // 1 color
-            // 2 size
-            using XLWorkbook wb = new();
-            var sheet1 = wb.AddWorksheet(GetProductsDataTable(products), "Products");
-            sheet1.Columns(1, 3).Style.Font.FontColor = XLColor.Black;
-            sheet1.Column(1).Width = 10;
-            sheet1.Columns(2, 3).Width = 25;
-            sheet1.Columns(4, 5).Style.Font.FontColor = XLColor.Blue;
-            sheet1.Columns(4, 5).Width = 15;
-            sheet1.Columns(6, 7).Width = 20;
-            sheet1.Columns(6, 7).Style.Font.FontColor = XLColor.Black;
-            sheet1.Row(1).CellsUsed().Style.Fill.BackgroundColor = XLColor.Black;
-            sheet1.Row(1).Style.Font.FontColor = XLColor.White;
-            sheet1.Row(1).Style.Font.FontSize = 16;
-            sheet1.Row(1).Style.Font.Bold = true;
-            sheet1.Row(1).Style.Font.Shadow = true;
-            sheet1.Row(1).Style.Font.VerticalAlignment = XLFontVerticalTextAlignmentValues.Superscript;
-            sheet1.Row(1).Style.Font.Italic = false;
-
-            using MemoryStream ms = new();
-            wb.SaveAs(ms);
-            return File(ms.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Products.xlsx");
+            byte[] data = GenerateExcle(products);
+            
+            return File(data, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Products.xlsx");
         }
 
         [HttpGet("export/pdf")]
@@ -226,14 +205,42 @@ namespace DiyorMarketApi.Controllers
             {
                 table.Rows.Add(product.Id,
                     product.Name,
-                    product.Description, 
-                    product.SalePrice, 
-                    product.SupplyPrice, 
+                    product.Description,
+                    product.SalePrice,
+                    product.SupplyPrice,
                     product.ExpireDate,
                     product.Category?.Name);
             }
 
             return table;
+        }
+
+        private static byte[] GenerateExcle(IEnumerable<ProductDto> productDto)
+        {
+            using XLWorkbook wb = new();
+            var sheet1 = wb.AddWorksheet(GetProductsDataTable(productDto), "Products");
+
+            sheet1.Columns(1, 3).Style.Font.FontColor = XLColor.Black;
+            sheet1.Columns(4, 5).Style.Font.FontColor = XLColor.Blue;
+            sheet1.Columns(6, 7).Style.Font.FontColor = XLColor.Black;
+            sheet1.Row(1).CellsUsed().Style.Fill.BackgroundColor = XLColor.Black;
+            sheet1.Row(1).Style.Font.FontColor = XLColor.White;
+
+            sheet1.Column(1).Width = 10;
+            sheet1.Columns(2, 3).Width = 25;
+            sheet1.Columns(4, 5).Width = 15;
+            sheet1.Columns(6, 7).Width = 20;
+            sheet1.Row(1).Style.Font.FontSize = 16;
+
+            sheet1.Row(1).Style.Font.Bold = true;
+            sheet1.Row(1).Style.Font.Shadow = true;
+            sheet1.Row(1).Style.Font.VerticalAlignment = XLFontVerticalTextAlignmentValues.Superscript;
+            sheet1.Row(1).Style.Font.Italic = false;
+
+            using MemoryStream ms = new();
+            wb.SaveAs(ms);
+
+            return ms.ToArray();
         }
     }
 }
