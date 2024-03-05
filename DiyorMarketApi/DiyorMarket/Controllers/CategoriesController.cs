@@ -45,33 +45,13 @@ namespace DiyorMarketApi.Controllers
             return Ok(category);
         }
 
-        [HttpGet("export")]
+        [HttpGet("export/xls")]
         public ActionResult ExportCustomers()
         {
-            var category = _categoryService.GetAllCategories();
+            var categories = _categoryService.GetAllCategories();
+            byte[] data = GenerateExcle(categories);
 
-            using XLWorkbook wb = new XLWorkbook();
-            var sheet1 = wb.AddWorksheet(GetCategoriesDataTable(category), "Categories");
-
-            sheet1.Column(1).Style.Font.FontColor = XLColor.Red;
-
-            sheet1.Columns(2, 4).Style.Font.FontColor = XLColor.Blue;
-
-            sheet1.Row(1).CellsUsed().Style.Fill.BackgroundColor = XLColor.Black;
-            //sheet1.Row(1).Cells(1,3).Style.Fill.BackgroundColor = XLColor.Yellow;
-            sheet1.Row(1).Style.Font.FontColor = XLColor.White;
-
-            sheet1.Row(1).Style.Font.Bold = true;
-            sheet1.Row(1).Style.Font.Shadow = true;
-            sheet1.Row(1).Style.Font.Underline = XLFontUnderlineValues.Single;
-            sheet1.Row(1).Style.Font.VerticalAlignment = XLFontVerticalTextAlignmentValues.Superscript;
-            sheet1.Row(1).Style.Font.Italic = true;
-
-            sheet1.Rows(2, 3).Style.Font.FontColor = XLColor.AshGrey;
-
-            using MemoryStream ms = new MemoryStream();
-            wb.SaveAs(ms);
-            return File(ms.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Categories.xlsx");
+            return File(data, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Categories.xlsx");
         }
 
         [HttpGet("export/pdf")]
@@ -89,7 +69,7 @@ namespace DiyorMarketApi.Controllers
 
             string categories = ConvertCategoriesToString(category);
 
-            graphics.DrawString(categories, font, PdfBrushes.Black, new PointF(0, 1));
+            graphics.DrawString(categories, font, PdfBrushes.Black, new PointF(0,0));
 
             MemoryStream stream = new MemoryStream();
             document.Save(stream);
@@ -141,18 +121,41 @@ namespace DiyorMarketApi.Controllers
 
             return NoContent();
         }
+        private static byte[] GenerateExcle(IEnumerable<CategoryDto> categoryDtos)
+        {
+            using XLWorkbook wb = new();
+            var sheet1 = wb.AddWorksheet(GetCategoriesDataTable(categoryDtos), "Categories");
 
-        private DataTable GetCategoriesDataTable(IEnumerable<CategoryDto> categories)
+            sheet1.Columns(1, 3).Style.Font.FontColor = XLColor.Black;
+            sheet1.Row(1).CellsUsed().Style.Fill.BackgroundColor = XLColor.Black;
+            sheet1.Row(1).Style.Font.FontColor = XLColor.White;
+
+            sheet1.Column(1).Width = 5;
+            sheet1.Columns(2, 3).Width = 12;
+
+            sheet1.Row(1).Style.Font.FontSize = 15;
+            sheet1.Row(1).Style.Font.Bold = true;
+            sheet1.Row(1).Style.Font.Shadow = true;
+            sheet1.Row(1).Style.Font.VerticalAlignment = XLFontVerticalTextAlignmentValues.Superscript;
+            sheet1.Row(1).Style.Font.Italic = false;
+
+            using MemoryStream ms = new();
+            wb.SaveAs(ms);
+
+            return ms.ToArray();
+        }
+
+        private static DataTable GetCategoriesDataTable(IEnumerable<CategoryDto> categories)
         {
             DataTable table = new DataTable();
             table.TableName = "Categories Data";
             table.Columns.Add("Id", typeof(int));
             table.Columns.Add("Name", typeof(string));
-            table.Columns.Add("NumberOfProducts", typeof(string));
+            table.Columns.Add("Number of Products", typeof(int));
 
             foreach (var category in categories)
             {
-                table.Rows.Add(category.Id, category.Name);
+                table.Rows.Add(category.Id, category.Name,category.NumberOfProduct);
             }
 
             return table;  
@@ -160,7 +163,7 @@ namespace DiyorMarketApi.Controllers
 
         private string ConvertCategoriesToString(IEnumerable<CategoryDto> categories)
         {
-            var categoryInfo = categories.Select(c => $"{c.Id}: {c.Name}");
+            var categoryInfo = categories.Select(c => $"{c.Id}: {c.Name}: {c.NumberOfProduct}");
 
             return string.Join(Environment.NewLine, categoryInfo);
         }
