@@ -4,10 +4,8 @@ namespace Lesson11.ViewModels
 {
     public class SaleViewModel
     {
-        public int Id { get; set; }
-        public Customer Customer { get; set; }
-        public decimal TotalDue { get; set; }
-        public DateTime SaleDate { get; set; }
-        public ICollection<Product> Products { get; set; }
+        public DateTime Date { get; set; }
+        public int CustomerId { get; set; }
+        public List<SaleItem> SaleItems { get; set; } = new List<SaleItem>();
     }
 }

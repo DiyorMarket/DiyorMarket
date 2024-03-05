@@ -188,14 +188,16 @@ namespace DiyorMarketApi.Controllers
 
         private static DataTable GetProductsDataTable(IEnumerable<ProductDto> productDtos)
         {
-            DataTable table = new DataTable();
-            table.TableName = "Products Data";
+            DataTable table = new()
+            {
+                TableName = "Products"
+            };
             table.Columns.Add("Id", typeof(int));
             table.Columns.Add("Name", typeof(string));
             table.Columns.Add("Description", typeof(string));
-            table.Columns.Add("SalePrice", typeof(decimal));
-            table.Columns.Add("SupplyPrice", typeof(decimal));
-            table.Columns.Add("ExpireDate", typeof(DateTime));
+            table.Columns.Add("Sale Price", typeof(decimal));
+            table.Columns.Add("Supply Price", typeof(decimal));
+            table.Columns.Add("Expire Date", typeof(DateTime));
             table.Columns.Add("Category", typeof(string));
 
             foreach (var product in productDtos)

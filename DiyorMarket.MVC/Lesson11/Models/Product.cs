@@ -20,6 +20,8 @@ namespace Lesson11.Models
         [Required]
         [DataType(DataType.Date)]
         public DateTime ExpireDate { get; set; }
+        public int QuantityInStock { get; set; }
+        public int LowQuantityAmount { get; set; }
 
         public int CategoryId { get; set; }
         [ForeignKey(nameof(CategoryId))]
