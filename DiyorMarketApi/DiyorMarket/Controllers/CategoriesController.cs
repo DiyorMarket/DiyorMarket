@@ -1,4 +1,5 @@
-﻿using DiyorMarket.Domain.DTOs.Category;
+﻿using ClosedXML.Excel;
+using DiyorMarket.Domain.DTOs.Category;
 using DiyorMarket.Domain.DTOs.Product;
 using DiyorMarket.Domain.Interfaces.Services;
 using DiyorMarket.Domain.ResourceParameters;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Syncfusion.Drawing;
 using Syncfusion.Pdf;
 using Syncfusion.Pdf.Graphics;
+using System.Data;
 
 
 namespace DiyorMarketApi.Controllers
@@ -153,7 +155,8 @@ namespace DiyorMarketApi.Controllers
                 table.Rows.Add(category.Id, category.Name);
             }
 
-            return table;
+            return table;  
+        }
 
         private string ConvertCategoriesToString(IEnumerable<CategoryDto> categories)
         {
