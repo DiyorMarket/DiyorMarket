@@ -34,7 +34,7 @@ namespace Lesson11.Controllers
         {
             return View();
         }
-
+ 
         [HttpPost]
         public IActionResult Create(Supplier supplier)
         {
@@ -89,11 +89,12 @@ namespace Lesson11.Controllers
             return View();
         }
 
-        public IActionResult Download()
+        public IActionResult Download(string type)
         {
-            var result = _supplierDataStore.GetExportFile();
+            var result = _supplierDataStore.GetExportFile(type);
+            (string format, string fileName) = GetFileDetails(type);
 
-            return File(result, "application/xls", "Suppliers.xls");
+            return File(result, format, fileName);
         }
 
         [HttpPost]
@@ -139,6 +140,23 @@ namespace Lesson11.Controllers
             _supplierDataStore.DeleteSupplier(id);
 
             return RedirectToAction(nameof(Index));
+        }
+        private static (string Format, string Name) GetFileDetails(string type)
+        {
+            string format = type switch
+            {
+                "xls" => "application/xls",
+                "pdf" => "application/pdf",
+                _ => "application/xls"
+            };
+            string name = type switch
+            {
+                "xls" => "Suppliers.xls",
+                "pdf" => "Suppliers.pdf",
+                _ => "Suppliers.xls"
+            };
+
+            return (format, name);
         }
 
         private static List<Supplier> DeserializeFile(IFormFile file)

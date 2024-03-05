@@ -99,11 +99,12 @@ namespace Lesson11.Controllers
             return RedirectToAction("Details", new { id = result.Id });
         }
 
-        public IActionResult Download()
+        public IActionResult Download(string type)
         {
-            var result = _customerDataStore.GetExportFile();
+            var result = _customerDataStore.GetExportFile(type);
+            (string format, string fileName) = GetFileDetails(type);
 
-            return File(result, "application/xls", "Customers.xls");
+            return File(result, format, fileName);
         }
 
         public IActionResult Edit(int id)
@@ -182,6 +183,23 @@ namespace Lesson11.Controllers
 
             return View();
         }
+        private static (string Format, string Name) GetFileDetails(string type)
+        {
+            string format = type switch
+            {
+                "xls" => "application/xls",
+                "pdf" => "application/pdf",
+                _ => "application/xls"
+            };
+            string name = type switch
+            {
+                "xls" => "Customers.xls",
+                "pdf" => "Customers.pdf",
+                _ => "Customers.xls"
+            };
+
+            return (format, name);
+        }
         private static List<Customer> DeserializeFile(IFormFile file)
         {
             List<Customer> customers = new();
@@ -202,12 +220,6 @@ namespace Lesson11.Controllers
             }
 
             return customers;
-        }
-        public IActionResult DownloadSaleItems(int saleId)
-        {
-            var result = _saleItemDataStore.GetExportFile(saleId);
-
-            return File(result, "application/xls", "SaleItems.xls");
         }
     }
 }

@@ -87,13 +87,13 @@ namespace Lesson11.Controllers
             return View();
         }
 
-        public IActionResult Download()
+        public IActionResult Download(string type)
         {
-            var result = _categoryDataStore.GetExportFile();
+            var result = _categoryDataStore.GetExportFile(type);
+            (string format, string fileName) = GetFileDetails(type);
 
-            return File(result, "application/xls", "Categories.xls");
+            return File(result, format, fileName);
         }
-
 
         public IActionResult Edit(int id)
         {
@@ -139,6 +139,23 @@ namespace Lesson11.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        private static (string Format, string Name) GetFileDetails(string type)
+        {
+            string format = type switch
+            {
+                "xls" => "application/xls",
+                "pdf" => "application/pdf",
+                _ => "application/xls"
+            };
+            string name = type switch
+            {
+                "xls" => "Categories.xls",
+                "pdf" => "Categories.pdf",
+                _ => "Categories.xls"
+            };
+
+            return (format, name);
+        }
         private static List<Category> DeserializeFile(IFormFile file)
         {
             List<Category> categories = new();

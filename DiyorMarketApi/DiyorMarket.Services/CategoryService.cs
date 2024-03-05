@@ -51,7 +51,7 @@ namespace DiyorMarket.Services
 
         public IEnumerable<CategoryDto> GetAllCategories()
         {
-            var categories = _context.Categories.ToList();
+            var categories = _context.Categories.Include(s => s.Products).ToList();
 
             return _mapper.Map<IEnumerable<CategoryDto>>(categories) ?? Enumerable.Empty<CategoryDto>();
         }

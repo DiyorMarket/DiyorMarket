@@ -27,19 +27,19 @@
             </div>
             <!-- Action Buttons -->
             <div class="d-flex flex-row mb-4" style="gap: 13px;">
-                <div class="dropdown">
-                    <button class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fa-solid fa-download"></i> Download
-                    </button>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <a class="dropdown-item" asp-action="DownloadXML">
-                            <i class="fa-solid fa-file-pdf"></i> XML
-                        </a>
-                        <a class="dropdown-item" asp-action="DownloadPDF">
-                            <i class="fa-solid fa-file-excel"></i> PDF
-                        </a>
+                    <div class="dropdown">
+                        <button class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa-solid fa-download"></i> Download
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" asp-action="download" asp-route-type="xls">
+                                <i class="fa-solid fa-file-excel"></i> Xls
+                            </a>
+                            <a class="dropdown-item" asp-action="download" asp-route-type="pdf">
+                                <i class="fa-solid fa-file-pdf"></i> Pdf
+                            </a>
+                        </div>
                     </div>
-                </div>
                 <a class="btn btn-outline-info" asp-action="upload">
                     <i class="fa-solid fa-upload"></i> Upload
                 </a>
