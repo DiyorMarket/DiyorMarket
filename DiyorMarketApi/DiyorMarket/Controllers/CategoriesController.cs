@@ -1,14 +1,13 @@
-﻿using DiyorMarket.Domain.DTOs.Category;
+﻿using ClosedXML.Excel;
+using DiyorMarket.Domain.DTOs.Category;
+using DiyorMarket.Domain.DTOs.Customer;
 using DiyorMarket.Domain.DTOs.Product;
 using DiyorMarket.Domain.Interfaces.Services;
 using DiyorMarket.Domain.ResourceParameters;
 using DiyorMarket.ResourceParameters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Syncfusion.Drawing;
-using Syncfusion.Pdf;
-using Syncfusion.Pdf.Graphics;
-
+using System.Data;
 
 namespace DiyorMarketApi.Controllers
 {
@@ -72,34 +71,6 @@ namespace DiyorMarketApi.Controllers
             return File(ms.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Categories.xlsx");
         }
 
-        [HttpGet("export/pdf")]
-        public IActionResult CreatePDFDocument()
-        {
-            PdfDocument document = new PdfDocument();
-
-            var category = _categoryService.GetAllCategories();
-
-            PdfPage page = document.Pages.Add();
-
-            PdfGraphics graphics = page.Graphics;
-
-            PdfFont font = new PdfStandardFont(PdfFontFamily.Helvetica, 20);
-
-            string categories = ConvertCategoriesToString(category);
-
-            graphics.DrawString(categories, font, PdfBrushes.Black, new PointF(0, 1));
-
-            MemoryStream stream = new MemoryStream();
-            document.Save(stream);
-
-            stream.Position = 0;
-
-            string contentType = "application/pdf";
-            string fileName = "categories.pdf";
-
-            return File(stream, contentType, fileName);
-        }
-
         [HttpGet("{id}/products")]
         public ActionResult<ProductDto> GetProductsByCategoryId(
             int id,
@@ -154,12 +125,6 @@ namespace DiyorMarketApi.Controllers
             }
 
             return table;
-
-        private string ConvertCategoriesToString(IEnumerable<CategoryDto> categories)
-        {
-            var categoryInfo = categories.Select(c => $"{c.Id}: {c.Name}");
-
-            return string.Join(Environment.NewLine, categoryInfo);
         }
     }
 }

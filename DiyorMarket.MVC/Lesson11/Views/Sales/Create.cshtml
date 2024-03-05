@@ -1,11 +1,12 @@
-﻿@model Lesson11.ViewModels.SaleViewModel
-@using System.Collections.Generic
+﻿@model Lesson11.Models.Sale
 
 @{
     ViewData["Title"] = "Create";
     Layout = "~/Views/Shared/_DataGridLayout.cshtml";
 }
-
+<head>
+    <link rel="stylesheet" href="~/css/animation.css" />
+</head>
 <!-- Navigation link -->
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
@@ -17,140 +18,32 @@
 
 <hr class="align-items-baseline" style="margin-top: 100px" />
 
-<div>
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <form class="d-flex justify-content-start gap-5">
-        <div style="width: 310px">
-            <ejs-datetimepicker id="sale-date" value="@DateTime.Now"></ejs-datetimepicker>
-        </div>
-        <div>
-            <ejs-combobox id="customers-id" autofill="true" dataSource="@ViewBag.Customers" placeholder="Select Customer" popupHeight="230px">
-                <e-combobox-fields text="FullName" value="Id"></e-combobox-fields>
-            </ejs-combobox>
-        </div>
-    </form>
-    <div class="d-flex justify-content-start gap-5 mt-3 mb-3">
-        <div style="width: 310px">
-            <ejs-combobox id="products-list" autofill="true" dataSource="@ViewBag.Products" change="onSelectedProductChanged" placeholder="Select a product" popupHeight="230px" style="color: white;">
-                <e-combobox-fields text="Name" value="Id"></e-combobox-fields>
-            </ejs-combobox>
-        </div>
-        <div style="width: 270px">
-            <ejs-numerictextbox id="item-quantity" value="1" format="###.##" floatLabelType="Auto"></ejs-numerictextbox>
-        </div>
-        <div>
-            <ejs-numerictextbox id="item-price" format="c2" floatLabelType="Auto"></ejs-numerictextbox>
-        </div>
-    </div>
-    <div class="d-flex flex-row-reverse">
-        <button class="btn btn-outline-success mr-auto" type="button" id="addItem">
-            <i class="fa fa-plus"></i> Add
-            </b>
-    </div>
-
-    <div class="form-group">
-        <ejs-grid id="sale-items" asp-for="Sale.SaleItems" toolbar="@(new List<string>() { "Edit", "Delete" })">
-            <e-grid-editsettings allowDeleting="true" allowEditing="true" mode="Normal"></e-grid-editsettings>
-            <e-grid-columns>
-                <e-grid-column headerText="Id" field="ProductId" type="string"></e-grid-column>
-                <e-grid-column headerText="Product Name" field="Name" type="string"></e-grid-column>
-                <e-grid-column headerText="Quantity" field="Quantity" type="number"></e-grid-column>
-                <e-grid-column headerText="UnitPrice" field="UnitPrice" type="string" format="C2"></e-grid-column>
-                <e-grid-column headerText="Total Price" field="TotalPrice" type="number" format="C2"></e-grid-column>
-            </e-grid-columns>
-        </ejs-grid>
-    </div>
-    <div class="mt-3">
-        <a asp-action="Index" class="btn btn-outline-info">
-            <i class="fa-solid fa-arrow-left-long"></i>
-            Back
-        </a>
-        <button class="btn btn-success mr-auto" type="button" id="create" style="place-content:end">
-            <i class="fa fa-check-circle"></i> Save
-        </button>
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="SaleDate" class="control-label"></label>
+                <input asp-for="SaleDate" class="form-control" />
+                <span asp-validation-for="SaleDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CustomerId" class="control-label mt-2"></label>
+                <select asp-for="CustomerId" class="form-control border border-dark" asp-items="@ViewBag.Customers"></select>
+            </div>
+            <div class="form-group  mt-3">
+                <a asp-action="Index" class="btn btn-outline-info">
+                    <i class="fa-solid fa-arrow-left-long"></i>
+                    Back
+                </a>
+                <button class="btn btn-outline-success mr-auto">
+                    <i class="fa fa-plus"></i> Create
+                </button>
+            </div>
+        </form>
     </div>
 </div>
 
-<script>
-    // add new item
-    document.getElementById('addItem').onclick = function () {
-        const grid = document.getElementById("sale-items").ej2_instances[0];
-        const quantity = document.getElementById('item-quantity').ej2_instances[0];
-        const unitPrice = document.getElementById('item-price').ej2_instances[0];
-        const productsList = document.getElementById('products-list').ej2_instances[0];
-
-        const supplyItem = {
-            ProductId: productsList.value,
-            Name: productsList.text,
-            Quantity: quantity.value,
-            UnitPrice: unitPrice.value,
-            TotalPrice: quantity.value * unitPrice.value
-        };
-
-        if (grid.dataSource.some(el => el.ProductId == supplyItem?.ProductId)) {
-            return;
-        }
-
-        grid.dataSource.unshift(supplyItem);
-        grid.refresh();
-    };
-
-    // submit supply
-    document.getElementById('create').onclick = function () {
-        const grid = document.getElementById("sale-items").ej2_instances[0];
-        const items = grid.dataSource;
-        const selectedDate = document.getElementById('sale-date').ej2_instances[0].value;
-        const newSupply = {
-            SaleItems: items,
-            Date: selectedDate,
-            CustomerId: $("#customers-id").val()
-        };
-        console.log(newSupply);
-        $.ajax
-            ({
-                url: '@Url.Action("Create", "Sales")',
-                type: 'POST',
-                data: JSON.stringify(newSupply),
-                contentType: "application/json",
-                dataType: 'JSON',
-                success: function (response) {
-                    console.log('success: ');
-                    console.log(response);
-                    window.location.href = response.redirectToUrl;
-                },
-                error: function (data) {
-                    console.log(error);
-                    console.log(data);
-                    alert('There was an error saving creating new supply! Please, try again.');
-                }
-            });
-    }
-
-    document.addEventListener('DOMContentLoaded', function () {
-        const options = {
-            rules: {
-                //must specify the name attribute value in rules section
-                'datevalue': { required: true }
-            },
-            customPlacement: (inputElement, errorElement) => {
-                //to place the error message in custom position
-                //inputElement - target element where the error text will be appended
-                //errorElement - error text which will be displayed.
-                inputElement.parentElement.parentElement.appendChild(errorElement);
-            }
-        };
-        const formObject = new ej.inputs.FormValidator('#sale-date', options);
-    });
-
-    function dlgButtonClick() {
-        const dialogObj = document.getElementById('dialog').ej2_instances[0];
-        dialogObj.hide();
-    }
-
-    function onSelectedProductChanged() {
-        const productsList = document.getElementById('products-list').ej2_instances[0];
-        const selectedProduct = productsList.dataSource.find(el => el.Id == productsList.value);
-        document.getElementById('item-price').ej2_instances[0].value = selectedProduct.SupplyPrice;
-        document.getElementById('item-quantity').ej2_instances[0].max = selectedProduct.QuantityInStock;
-    }
-</script>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

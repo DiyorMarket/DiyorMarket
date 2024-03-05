@@ -1,44 +1,6 @@
-﻿@{
-    Layout = "~/Views/Shared/_ErrorPageLayout.cshtml";
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
 }
-
-<style>
-    .container {
-        position: relative;
-        width: 100%;
-        max-height: 91vh;
-    }
-
-    .responsive-image {
-        width: 100%;
-        max-height: 91vh;
-        height: auto;
-        margin: auto;
-        display: block;
-    }
-
-    .overlay-button {
-        position: absolute;
-        bottom: 2%;
-        right: 2%;
-        background-color: gray;
-        color: whitesmoke;
-        padding: 1% 2%;
-        border: none;
-        border-radius: 10px;
-        cursor: pointer;
-        z-index: 2;
-        font-size: 1.8vw;
-    }
-</style>
-
-<div class="container">
-    <img src="~/images/403-Forbidden.png" class="responsive-image" alt="403" />
-    <button class="overlay-button" onclick="redirectToDashboard()">Back</button>
-</div>
-
-<script>
-    function redirectToDashboard() {
-        window.location.href = "/Dashboard/index";
-    }
-</script>
+<p>Forbidden, you don't have access to this page.</p>

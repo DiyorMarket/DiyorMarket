@@ -6,7 +6,6 @@
 
         public int? SupplierId { get; set; }
         public string? SearchString { get; set; }
-        public DateTime? SupplyDate { get; set; }
         public string OrderBy { get; set; } = "int";
 
         public int PageNumber { get; set; } = 1;

@@ -1,9 +1,7 @@
 ﻿using ExcelDataReader;
 using Lesson11.Models;
 using Lesson11.Stores.Customers;
-using Lesson11.Stores.Products;
 using Lesson11.Stores.Sales;
-using Lesson11.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -12,14 +10,12 @@ namespace Lesson11.Controllers
     public class SalesController : Controller
     {
         private readonly ISaleDataStore _saleDataStore;
-        private readonly IProductDataStore _productDataStore;
         private readonly ICustomerDataStore _customersDataStore;
 
-        public SalesController(ISaleDataStore saleDataStore, ICustomerDataStore customersDataStore, IProductDataStore productDataStore)
+        public SalesController(ISaleDataStore saleDataStore, ICustomerDataStore customersDataStore)
         {
             _saleDataStore = saleDataStore ?? throw new ArgumentNullException(nameof(saleDataStore));
-            _customersDataStore = customersDataStore ?? throw new ArgumentNullException(nameof(customersDataStore));
-            _productDataStore = productDataStore ?? throw new ArgumentNullException(nameof(_productDataStore));
+            _customersDataStore = customersDataStore ?? throw new ArgumentNullException(nameof(customersDataStore)); ;
         }
 
         public IActionResult Index(string? searchString, int? customerId, DateTime? saleDate, int pageNumber)
@@ -48,32 +44,22 @@ namespace Lesson11.Controllers
         public IActionResult Create()
         {
             var customers = GetAllCustomers(null);
-            ViewBag.Customers = customers.ToList();
-            var products = _productDataStore.GetProducts(null, null, 0, null);
-            ViewBag.Products = products.Data.ToList();
+            ViewBag.Customers = new SelectList(customers, "Id", "FullName");
             return View();
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] SaleViewModel saleViewModel)
+        public IActionResult Create(Sale sale)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
-            decimal totalDue = 0;
-
-            foreach(var item in saleViewModel.SaleItems)
-            {
-                totalDue += (item.Quantity * item.UnitPrice);
-            }
 
             var result = _saleDataStore.CreateSale(new Sale
             {
-                SaleDate = saleViewModel.Date,
-                TotalDue = totalDue,
-                CustomerId = saleViewModel.CustomerId,
-                SaleItems = saleViewModel.SaleItems,
+                SaleDate = sale.SaleDate,
+                CustomerId = sale.CustomerId
             });
 
             if (result is null)
@@ -81,7 +67,7 @@ namespace Lesson11.Controllers
                 return BadRequest();
             }
 
-            return Json(new { redirectToUrl = Url.Action("Details", "Sales", new { id = result.Id }) });
+            return RedirectToAction("Details", new { id = result.Id });
         }
 
         public IActionResult Details(int id)

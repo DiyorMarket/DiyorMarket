@@ -1,12 +1,10 @@
 ﻿@model Lesson11.ViewModels.SupplyViewModel
-@using System.Collections.Generic
 
 @{
     ViewData["Title"] = "Create";
     Layout = "~/Views/Shared/_DataGridLayout.cshtml";
-    List<Product> products = ViewBag.Products;
 }
-
+<script src="https://cdn.syncfusion.com/ej2/18.3.44/dist/ej2.min.js"></script>
 <!-- Navigation link -->
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
@@ -18,139 +16,111 @@
 
 <hr class="align-items-baseline" style="margin-top: 100px" />
 
-<div>
+
+<form asp-action="Create">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <form class="d-flex justify-content-start gap-5">
-        <div style ="width: 310px">
-            <ejs-datetimepicker id="supply-date" value="@DateTime.Now"></ejs-datetimepicker>
+    <div class="d-flex justify-content-start">
+        <div class="p-2">
+            <label asp-for="Supply.SupplyDate" class="control-label"></label>
+            <input asp-for="Supply.SupplyDate" class="form-control" />
+            <span asp-validation-for="Supply.SupplyDate" class="text-danger"></span>
         </div>
+        <div class="p-0 mr-5">
+            <label asp-for="Supply.SupplierId" class="control-label mt-2"></label>
+            <select asp-for="Supply.SupplierId" class="form-control border border-dark" asp-items="@ViewBag.Suppliers"></select>
+        </div>
+    </div>
+    <div class="d-flex justify-content-start">
+        <div class="p-0 mr-5">
+            <label asp-for="SupplyItem.ProductId" class="control-label mt-2"></label>
+            <select asp-for="SupplyItem.ProductId" class="form-control border border-dark" asp-items="@ViewBag.Products"></select>
+        </div>
+        <div class="p-2">
+            <label asp-for="SupplyItem.Quantity" class="control-label"></label>
+            <input asp-for="SupplyItem.Quantity" class="form-control" />
+            <span asp-validation-for="SupplyItem.Quantity" class="text-danger"></span>
+        </div>
+        <div class="p-2">
+            <label asp-for="SupplyItem.UnitPrice" class="control-label"></label>
+            <input asp-for="SupplyItem.UnitPrice" class="form-control" />
+            <span asp-validation-for="SupplyItem.UnitPrice" class="text-danger"></span>
+        </div>
+    </div>
+    <div>
         <div>
-            <ejs-combobox id="supplier-id" autofill="true" dataSource="@ViewBag.Suppliers" placeholder="Select Supplier" popupHeight="230px">
-                <e-combobox-fields text="FirstName" value="Id"></e-combobox-fields>
-            </ejs-combobox>
+            <ejs-grid id="supplies-list" dataSource="@(Model?.SupplyItems)" load="load">
+                <e-grid-editsettings allowAdding="true" allowDeleting="true" allowEditing="true" mode="Normal"></e-grid-editsettings>
+                <e-grid-columns>
+                    <e-grid-column headerText="Product Name" field="ProductId" type="string"></e-grid-column>
+                    <e-grid-column headerText="Quantity" field="Quantity" type="number" format="C2"></e-grid-column>
+                    <e-grid-column headerText="UnitPrice" field="UnitPrice" type="string"></e-grid-column>
+                </e-grid-columns>
+            </ejs-grid>
         </div>
-    </form>
-    <form class="d-flex justify-content-start gap-5 mt-3 mb-3">
-        <div style="width: 310px">
-            <ejs-combobox id="products-list" autofill="true" dataSource="@ViewBag.Products" change="onSelectedProductChanged" placeholder="Select a product" popupHeight="230px" style="color: white;">
-                <e-combobox-fields text="Name" value="Id"></e-combobox-fields>
-            </ejs-combobox>
-        </div>
-        <div style="width: 270px">
-            <ejs-numerictextbox id="item-quantity" value="1" format="###.##" floatLabelType="Auto"></ejs-numerictextbox>
-        </div>
-        <div>
-            <ejs-numerictextbox id="item-price" format="c2" floatLabelType="Auto"></ejs-numerictextbox>
-        </div>
-        <div>
-            <button class="btn btn-outline-success mr-auto" type="button" id="addItem">
+        <div class="form-group mt-3">
+            <button class="btn btn-outline-success mr-auto" type="button" id="btnAddSupplyItem">
                 <i class="fa fa-plus"></i> Add
             </button>
         </div>
-    </form>
-
-    <div class="form-group">
-        <ejs-grid id="supply-items" asp-for="Supply.SupplyItems" toolbar="@(new List<string>() { "Edit", "Delete" })">
-            <e-grid-editsettings allowDeleting="true" allowEditing="true" mode="Normal"></e-grid-editsettings>
-            <e-grid-columns>
-                <e-grid-column headerText="Id" field="ProductId" type="string"></e-grid-column>
-                <e-grid-column headerText="Product Name" field="Name" type="string"></e-grid-column>
-                <e-grid-column headerText="Quantity" field="Quantity" type="number"></e-grid-column>
-                <e-grid-column headerText="UnitPrice" field="UnitPrice" type="string" format="C2"></e-grid-column>
-                <e-grid-column headerText="Total Price" field="TotalPrice" type="number" format="C2"></e-grid-column>
-            </e-grid-columns>
-        </ejs-grid>
     </div>
-
-    <div class="mt-3">
-        <a asp-action="Index" class="btn btn-outline-info">
-            <i class="fa-solid fa-arrow-left-long"></i>
-            Back
-        </a>
-        <button class="btn btn-success mr-auto" type="button" id="create">
-            <i class="fa fa-check-circle"></i> Save
-        </button>
-    </div>
+</form>
+<div class="form-group  mt-3">
+    <a asp-action="Index" class="btn btn-outline-info">
+        <i class="fa-solid fa-arrow-left-long"></i>
+        Back
+    </a>
+    <button class="btn btn-outline-success mr-auto">
+        <i class="fa fa-plus"></i> Create
+    </button>
 </div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        // Initialize supplyItems with existing data or an empty array
+        var supplyItems = @Html.Raw(Json.Serialize(Model?.SupplyItems));
 
-<script>
-    // add new item
-    document.getElementById('addItem').onclick = function () {
-        const grid = document.getElementById("supply-items").ej2_instances[0];
-        const quantity = document.getElementById('item-quantity').ej2_instances[0];
-        const unitPrice = document.getElementById('item-price').ej2_instances[0];
-        const productsList = document.getElementById('products-list').ej2_instances[0];
+        // Load function to initialize the grid
+        function load() {
+            var grid = document.getElementById("supplies-list").ej2_instances[0];
+            if (!grid) {
+                ej.grids.Grid.Inject(ej.grids.Edit, ej.grids.Toolbar);
+                var gridOptions = {
+                    dataSource: [],
+                    gridLines: "Vertical",
+                    toolbar: ["Edit", "Delete"],
+                    editSettings: { allowAdding: true, allowDeleting: true, allowEditing: true, mode: "Normal" },
+                    columns: [
+                        { headerText: "Product Name", field: "ProductId", type: "string" },
+                        { headerText: "Quantity", field: "Quantity", type: "number", format: "C2" },
+                        { headerText: "UnitPrice", field: "UnitPrice", type: "string" }
+                    ]
+                };
+                grid = new ej.grids.Grid(gridOptions);
+                grid.appendTo("#supplies-list");
+            }
 
-        const supplyItem = {
-            ProductId: productsList.value,
-            Name: productsList.text,
-            Quantity: quantity.value,
-            UnitPrice: unitPrice.value,
-            TotalPrice: quantity.value * unitPrice.value
-        };
-        
-        if (grid.dataSource.some(el => el.ProductId == supplyItem?.ProductId)) {
-            return;
+            grid.dataSource = supplyItems;
+            grid.refresh();
         }
 
-        grid.dataSource.unshift(supplyItem);
-        grid.refresh();
-    };
+        // Event listener for the "Add" button
+        document.getElementById("btnAddSupplyItem").addEventListener("click", function () {
+            var productId = prompt("Enter Product ID:");
+            var quantity = prompt("Enter Quantity:");
+            var unitPrice = prompt("Enter Unit Price:");
 
-    // submit supply
-    document.getElementById('create').onclick = function () {
-        const grid = document.getElementById("supply-items").ej2_instances[0];
-        const items = grid.dataSource;
-        const selectedDate = document.getElementById('supply-date').ej2_instances[0].value;
-        const newSupply = {
-            SupplyItems: items,
-            Date: selectedDate,
-            supplierId: $("#supplier-id").val()
-        };
-        console.log(newSupply);
-        $.ajax
-            ({
-                url: '@Url.Action("Create", "Supplies")',
-                type: 'POST',
-                data: JSON.stringify(newSupply), //
-                contentType: "application/json",
-                dataType: 'JSON',
-                success: function (data) {
-                    document.getElementById('targetButton').onclick = function () {
-                        const dialog = document.getElementById("dialog").ej2_instances[0];
-                        dialog.show();
-                    }
-                },
-                error: function(data) {
-                    alert('There was an error saving creating new supply! Please, try again.');
-                }
-            });
-    }
+            var supplyItem = {
+                ProductId: productId,
+                Quantity: quantity,
+                UnitPrice: unitPrice
+            };
 
-    document.addEventListener('DOMContentLoaded', function () {
-        const options = {
-            rules: {
-                //must specify the name attribute value in rules section
-                'datevalue': { required: true }
-            },
-            customPlacement: (inputElement, errorElement) => {
-                //to place the error message in custom position
-                //inputElement - target element where the error text will be appended
-                //errorElement - error text which will be displayed.
-                inputElement.parentElement.parentElement.appendChild(errorElement);
-            }
-        };
-        const formObject = new ej.inputs.FormValidator('#form-element', options);
-    });
+            supplyItems.push(supplyItem);
+            load();
+        });
+    </script>
+}
 
-    function dlgButtonClick() {
-        const dialogObj = document.getElementById('dialog').ej2_instances[0];
-        dialogObj.hide();
-    }
 
-    function onSelectedProductChanged() {
-        const productsList = document.getElementById('products-list').ej2_instances[0];
-        const selectedProduct = productsList.dataSource.find(el => el.Id == productsList.value);
-        document.getElementById('item-price').ej2_instances[0].value = selectedProduct.SupplyPrice;
-    }
-</script>

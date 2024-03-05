@@ -15,7 +15,7 @@ namespace Lesson11.Stores.Supplies
             _api = apiClient;
         }
 
-        public GetSupplyResponse? GetSupplies(string? searchString, int? supplierId, int pageNumber, DateTime? supplyDate)
+        public GetSupplyResponse? GetSupplies(string? searchString, int? supplierId, int pageNumber)
         {
             StringBuilder query = new("");
 
@@ -24,19 +24,14 @@ namespace Lesson11.Stores.Supplies
                 query.Append($"searchString={searchString}&");
             }
 
-            if (supplierId != null && supplierId != 0)
+            if (supplierId != null)
             {
                 query.Append($"supplierId={supplierId}&");
             }
 
             if (pageNumber != 0)
             {
-                query.Append($"pageNumber={pageNumber}&");
-            }
-
-            if(supplyDate != null && supplyDate <= DateTime.Now)
-            {
-                query.Append($"supplyDate={supplyDate.Value.ToString("MM/dd/yyyy")}&");
+                query.Append($"pageNumber={pageNumber}");
             }
 
             var response = _api.Get("supplies?" + query.ToString());

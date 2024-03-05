@@ -4,8 +4,8 @@ namespace Lesson11.ViewModels
 {
     public class SupplyViewModel
     {
-        public DateTime Date { get; set; }
-        public int SupplierId { get; set; }
+        public Supply Supply { get; set; }
+        public SupplyItem SupplyItem { get; set; }
         public List<SupplyItem> SupplyItems { get; set; } = new List<SupplyItem>();
     }
 }

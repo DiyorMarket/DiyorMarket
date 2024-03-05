@@ -26,16 +26,11 @@ namespace Lesson11.Controllers
         {
             return statusCode switch
             {
-                401 => RedirectToAction(nameof(Unauthorized)),
+                401 => RedirectToAction("Index", "Auth"),
                 403 => RedirectToAction(nameof(Forbidden)),
                 404 => RedirectToAction(nameof(NotFound)),
                 _ => RedirectToAction(nameof(InternalServerError)),
             };
-        }
-
-        public IActionResult Unauthorized()
-        {
-            return View();
         }
 
         public IActionResult Forbidden()

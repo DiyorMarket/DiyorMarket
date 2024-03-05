@@ -59,7 +59,6 @@ namespace Lesson11.Controllers
             ModelState.AddModelError("Password", "Incorrect password or login");
             return View(loginViewModel);
         }
-        
 
         public IActionResult Register()
         {

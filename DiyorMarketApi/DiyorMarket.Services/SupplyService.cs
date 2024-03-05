@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DiyorMarket.Domain.DTOs.Sale;
 using DiyorMarket.Domain.DTOs.Supply;
 using DiyorMarket.Domain.Entities;
 using DiyorMarket.Domain.Exceptions;
@@ -22,10 +23,30 @@ namespace DiyorMarket.Services
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public GetBaseResponse<SupplyDto> GetSupplies(
-            SupplyResourceParameters supplyResourceParameters)
+        public GetBaseResponse<SupplyDto> GetSupplies(SupplyResourceParameters supplyResourceParameters)
         {
-            var query = GetQuerySupplyResParameters(supplyResourceParameters);
+            var query = _context.Supplies
+                    .Include(x => x.SupplyItems)
+                    .IgnoreAutoIncludes()
+                    .AsNoTracking()
+                    .AsQueryable();
+
+            if (supplyResourceParameters.SupplierId is not null)
+            {
+                query = query.Where(x => x.SupplierId == supplyResourceParameters.SupplierId);
+            }
+
+            if (!string.IsNullOrEmpty(supplyResourceParameters.OrderBy))
+            {
+                query = supplyResourceParameters.OrderBy.ToLowerInvariant() switch
+                {
+                    "id" => query.OrderBy(x => x.Id),
+                    "iddesc" => query.OrderByDescending(x => x.Id),
+                    "supplydate" => query.OrderBy(x => x.SupplyDate),
+                    "supplydatedesc" => query.OrderByDescending(x => x.SupplyDate),
+                    _ => query.OrderBy(x => x.Id),
+                };
+            }
 
             var supplies = query.ToPaginatedList(supplyResourceParameters.PageSize, supplyResourceParameters.PageNumber);
 
@@ -99,42 +120,6 @@ namespace DiyorMarket.Services
                 _context.Supplies.Remove(supply);
             }
             _context.SaveChanges();
-        }
-
-        private IQueryable<Supply> GetQuerySupplyResParameters(
-            SupplyResourceParameters supplyResourceParameters)
-        {
-            var query = _context.Supplies
-                    .Include(x => x.SupplyItems)
-                    .IgnoreAutoIncludes()
-                    .AsNoTracking()
-                    .AsQueryable();
-
-            if (supplyResourceParameters.SupplyDate is not null)
-            {
-                query = query.Where(x => x.SupplyDate.Date
-                >= supplyResourceParameters.SupplyDate.Value.Date
-                && x.SupplyDate.Date <= DateTime.Now.Date);
-            }
-
-            if (supplyResourceParameters.SupplierId is not null)
-            {
-                query = query.Where(x => x.SupplierId == supplyResourceParameters.SupplierId);
-            }
-
-            if (!string.IsNullOrEmpty(supplyResourceParameters.OrderBy))
-            {
-                query = supplyResourceParameters.OrderBy.ToLowerInvariant() switch
-                {
-                    "id" => query.OrderBy(x => x.Id),
-                    "iddesc" => query.OrderByDescending(x => x.Id),
-                    "supplydate" => query.OrderBy(x => x.SupplyDate),
-                    "supplydatedesc" => query.OrderByDescending(x => x.SupplyDate),
-                    _ => query.OrderBy(x => x.Id),
-                };
-            }
-
-            return query;
         }
     }
 }
