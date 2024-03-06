@@ -34,7 +34,7 @@ namespace DiyorMarket.Extensions
             services.AddScoped<ISupplyService, SupplyService>();
             services.AddScoped<ISupplyItemService, SupplyItemService>();
             services.AddScoped<IDashboardService, DashboardService>();
-            services.AddTransient<IEmailSender, EmailSender>();
+            services.AddSingleton<IEmailSender, EmailSender>();
 
             services.AddControllers()
               .AddNewtonsoftJson(options =>

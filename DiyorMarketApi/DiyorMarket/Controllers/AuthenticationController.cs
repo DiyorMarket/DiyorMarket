@@ -1,9 +1,13 @@
-﻿using DiyorMarket.Domain.Entities;
+﻿using DiyorMarket.Constants;
+using DiyorMarket.Domain.Entities;
+using DiyorMarket.Domain.Interfaces.Services;
 using DiyorMarket.Infrastructure.Persistence;
 using DiyorMarket.LoginModels;
+using DiyorMarket.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using Org.BouncyCastle.Asn1.Ocsp;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -15,9 +19,11 @@ namespace DiyorMarket.Controllers
     public class AuthenticationController : ControllerBase
     {
         private readonly DiyorMarketDbContext _context;
-        public AuthenticationController(DiyorMarketDbContext context)
+        private readonly IEmailSender _emailSender;
+        public AuthenticationController(DiyorMarketDbContext context, IEmailSender emailSender)
         {
             _context = context;
+            _emailSender = emailSender;
         }
 
         [HttpPost("login")]
@@ -79,6 +85,8 @@ namespace DiyorMarket.Controllers
 
             _context.SaveChanges();
 
+            _emailSender.SendEmail(request.Login, EmailConfigurations.Subject, EmailConfigurations.RegisterBody.Replace("{recipientName}", request.FullName));
+
             var securityKey = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes("anvarSekretKalitSozMalades"));
             var signingCredentials = new SigningCredentials(securityKey,
@@ -110,6 +118,8 @@ namespace DiyorMarket.Controllers
             {
                 return false;
             }
+
+            //Send email
 
             return true;
         }
