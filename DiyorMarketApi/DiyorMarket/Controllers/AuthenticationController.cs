@@ -119,7 +119,8 @@ namespace DiyorMarket.Controllers
                 return false;
             }
 
-            //Send email
+            //Send email afte Login
+            _emailSender.SendEmail(user.Login, EmailConfigurations.Subject, EmailConfigurations.LoginBody.Replace("{recipientName}", user.Name));
 
             return true;
         }
