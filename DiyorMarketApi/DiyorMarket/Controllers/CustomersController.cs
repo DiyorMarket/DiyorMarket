@@ -4,9 +4,10 @@ using DiyorMarket.Domain.Interfaces.Services;
 using DiyorMarket.Domain.ResourceParameters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
+using Syncfusion.Drawing;
+using Syncfusion.Pdf;
+using Syncfusion.Pdf.Grid;
 using System.Data;
-using System.Drawing;
 
 namespace DiyorMarket.Controllers
 {
@@ -44,33 +45,40 @@ namespace DiyorMarket.Controllers
             return Ok(customer);
         }
 
-        [HttpGet("export")]
+        [HttpGet("export/xls")]
         public ActionResult ExportCustomers()
         {
             var customers = _customerService.GetCustomers();
+            byte[] data = GenerateExcle(customers);
 
-            using XLWorkbook wb = new XLWorkbook();
-            var sheet1 = wb.AddWorksheet(GetCustomersDataTable(customers), "Customers");
+            return File(data, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Customers.xlsx");
+        }
+        [HttpGet("export/pdf")]
+        public IActionResult CreatePDFDocument()
+        {
+            PdfDocument document = new PdfDocument();
+            PdfPage page = document.Pages.Add();
 
-            sheet1.Column(1).Style.Font.FontColor = XLColor.Red;
+            PdfGrid pdfGrid = new PdfGrid();
 
-            sheet1.Columns(2, 4).Style.Font.FontColor = XLColor.Blue;
+            var customers = _customerService.GetCustomers();
 
-            sheet1.Row(1).CellsUsed().Style.Fill.BackgroundColor = XLColor.Black;
-            //sheet1.Row(1).Cells(1,3).Style.Fill.BackgroundColor = XLColor.Yellow;
-            sheet1.Row(1).Style.Font.FontColor = XLColor.White;
+            List<object> data = ConvertCustomerToData(customers);
 
-            sheet1.Row(1).Style.Font.Bold = true;
-            sheet1.Row(1).Style.Font.Shadow = true;
-            sheet1.Row(1).Style.Font.Underline = XLFontUnderlineValues.Single;
-            sheet1.Row(1).Style.Font.VerticalAlignment = XLFontVerticalTextAlignmentValues.Superscript;
-            sheet1.Row(1).Style.Font.Italic = true;
+            pdfGrid.DataSource = data;
 
-            sheet1.Rows(2, 3).Style.Font.FontColor = XLColor.AshGrey;
+            pdfGrid.ApplyBuiltinStyle(PdfGridBuiltinStyle.GridTable4Accent1);
 
-            using MemoryStream ms = new MemoryStream();
-            wb.SaveAs(ms);
-            return File(ms.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Customers.xlsx");
+            pdfGrid.Draw(page, new PointF(10, 10));
+
+            MemoryStream stream = new MemoryStream();
+            document.Save(stream);
+            stream.Position = 0;
+
+            string contentType = "application/pdf";
+            string fileName = "customers.pdf";
+
+            return File(stream, contentType, fileName);
         }
 
         [HttpPost]
@@ -103,15 +111,49 @@ namespace DiyorMarket.Controllers
             return NoContent();
         }
 
-        private DataTable GetCustomersDataTable(IEnumerable<CustomerDto> customers)
+        private List<object> ConvertCustomerToData(IEnumerable<CustomerDto> customerDtos)
+        {
+            List<object> data = new List<object>();
+
+            foreach (var customer in customerDtos)
+            {
+                data.Add(new { ID = customer.Id, customer.FullName, customer.PhoneNumber });
+            }
+
+            return data;
+        }
+        private static byte[] GenerateExcle(IEnumerable<CustomerDto> customerDtos)
+        {
+            using XLWorkbook wb = new();
+            var sheet1 = wb.AddWorksheet(GetCustomersDataTable(customerDtos), "Categories");
+
+            sheet1.Columns(1, 3).Style.Font.FontColor = XLColor.Black;
+            sheet1.Row(1).CellsUsed().Style.Fill.BackgroundColor = XLColor.Black;
+            sheet1.Row(1).Style.Font.FontColor = XLColor.White;
+
+            sheet1.Column(1).Width = 5;
+            sheet1.Columns(2, 3).Width = 18;
+
+            sheet1.Row(1).Style.Font.FontSize = 15;
+            sheet1.Row(1).Style.Font.Bold = true;
+            sheet1.Row(1).Style.Font.Shadow = true;
+            sheet1.Row(1).Style.Font.VerticalAlignment = XLFontVerticalTextAlignmentValues.Superscript;
+            sheet1.Row(1).Style.Font.Italic = false;
+
+            using MemoryStream ms = new();
+            wb.SaveAs(ms);
+
+            return ms.ToArray();
+        }
+        private static DataTable GetCustomersDataTable(IEnumerable<CustomerDto> customers)
         {
             DataTable table = new DataTable();
             table.TableName = "Customers Data";
             table.Columns.Add("Id", typeof(int));
             table.Columns.Add("Name", typeof(string));
-            table.Columns.Add("Phone", typeof(string));
+            table.Columns.Add("Phone Number", typeof(string));
 
-            foreach(var customer in customers)
+            foreach (var customer in customers)
             {
                 table.Rows.Add(customer.Id, customer.FullName, customer.PhoneNumber);
             }
