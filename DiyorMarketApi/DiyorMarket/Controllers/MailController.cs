@@ -1,4 +1,5 @@
-﻿using DiyorMarket.Domain.Interfaces.Services;
+﻿using DiyorMarket.Constants;
+using DiyorMarket.Domain.Interfaces.Services;
 using DocumentFormat.OpenXml.Wordprocessing;
 using MailKit.Net.Smtp;
 using MailKit.Security;
@@ -14,19 +15,19 @@ namespace DiyorMarket.Controllers
     {
         private readonly IEmailSender _emailSender;
 
+        public MailController() { }
         public MailController(IEmailSender emailSender)
         {
-            _emailSender = emailSender;
+            _emailSender = emailSender ?? throw new ArgumentNullException(nameof(emailSender));
         }
 
-        [HttpPost("login")]
-        public async Task<ActionResult> SendLoginEmail(string receiver, string subject, string message)
+        [HttpPost("register")]
+        public async Task<ActionResult> SendRegisterEmail(string receiverEmail, string? name)
         {
-            //var receiver = "azamatgiasov04@gmail.com";
-            //var subject = "Log in";
-            //var message = "Hello World";
+            string subject = EmailConfigurations.Subject;
+            string emailBody = EmailConfigurations.RegisterBody.Replace("{recipientName}", name);
 
-            await _emailSender.SendEmail(receiver, subject, message);
+            await _emailSender.SendEmail(receiverEmail, subject, emailBody);
 
             return Ok();
         }
