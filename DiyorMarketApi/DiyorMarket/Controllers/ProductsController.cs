@@ -1,17 +1,17 @@
 ﻿using AutoMapper;
 using ClosedXML.Excel;
-using DiyorMarket.Domain.DTOs.Category;
 using DiyorMarket.Domain.DTOs.Product;
 using DiyorMarket.Domain.Entities;
 using DiyorMarket.Domain.Interfaces.Services;
 using DiyorMarket.ResourceParameters;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using PdfSharpCore.Drawing;
-using PdfSharpCore.Pdf;
+using Syncfusion.Drawing;
+using Syncfusion.Pdf;
+using Syncfusion.Pdf.Grid;
 using System.Data;
-using System.IO.Compression;
+using PdfDocument = Syncfusion.Pdf.PdfDocument;
+using PdfPage = Syncfusion.Pdf.PdfPage;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -47,58 +47,34 @@ namespace DiyorMarketApi.Controllers
             var products = _productService.GetAllProducts();
             byte[] data = GenerateExcle(products);
             
-            return File(data, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Products.xlsx");
+            return File(data, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Products.xls");
         }
 
         [HttpGet("export/pdf")]
-        public ActionResult ExportProductsPDF()
+        public IActionResult CreatePDFDocument()
         {
+            PdfDocument document = new PdfDocument();
+            PdfPage page = document.Pages.Add();
+
+            PdfGrid pdfGrid = new PdfGrid();
             var products = _productService.GetAllProducts();
-            var dataTable = GetProductsDataTable(products);
 
-            // Создание PDF-документа
-            using (PdfDocument pdf = new PdfDocument())
-            {
-                PdfPage page = pdf.AddPage();
-                XGraphics gfx = XGraphics.FromPdfPage(page);
-                XFont font = new XFont("Arial", 12, XFontStyle.Regular);
+            List<object> data = ConvertCategoriesToData(products);
 
-                // Начало новой страницы PDF
-                gfx.DrawString("Products PDF", font, XBrushes.Black, new XRect(0, 0, page.Width.Point, page.Height.Point), XStringFormats.TopCenter);
+            pdfGrid.DataSource = data;
 
-                // Добавление данных о продуктах в PDF
-                int yPosition = 40; // Начальная позиция Y
-                foreach (DataRow row in dataTable.Rows)
-                {
-                    string productInfo = $"Id: {row["Id"]}, Name: {row["Name"]}, Description: {row["Description"]}, SalePrice: {row["SalePrice"]}, SupplyPrice: {row["SupplyPrice"]}, ExpireDate: {row["ExpireDate"]}, CategoryName: {(row["CategoryName"] != DBNull.Value ? row["CategoryName"] : "")}";
+            pdfGrid.ApplyBuiltinStyle(PdfGridBuiltinStyle.GridTable4Accent1);
 
-                    // Проверяем, поместится ли информация о продукте на текущей странице
-                    var size = gfx.MeasureString(productInfo, font);
-                    if (yPosition + size.Height > page.Height.Point - 40)
-                    {
-                        // Если не помещается, добавляем новую страницу
-                        page = pdf.AddPage();
-                        gfx = XGraphics.FromPdfPage(page);
-                        yPosition = 40; // Сбросить позицию Y
+            pdfGrid.Draw(page, new PointF(15, 15));
 
-                        // Начать новую страницу с заголовком
-                        gfx.DrawString("Products PDF", font, XBrushes.Black, new XRect(0, 0, page.Width.Point, page.Height.Point), XStringFormats.TopCenter);
-                    }
+            MemoryStream stream = new MemoryStream();
+            document.Save(stream);
+            stream.Position = 0;
 
-                    // Отрисовка информации о продукте
-                    gfx.DrawString(productInfo, font, XBrushes.Black, new XRect(40, yPosition, page.Width.Point - 80, page.Height.Point), XStringFormats.TopLeft);
-                    yPosition += (int)size.Height + 5; // Учитываем небольшой интервал между строками
-                }
+            string contentType = "application/pdf";
+            string fileName = "products.pdf";
 
-                // Сохранение PDF в MemoryStream и отправка его как файл ответа
-                using (MemoryStream pdfStream = new MemoryStream())
-                {
-                    pdf.Save(pdfStream, false);
-
-                    // Возврат PDF-файла
-                    return File(pdfStream.ToArray(), "application/pdf", "Products.pdf");
-                }
-            }
+            return File(stream, contentType, fileName);
         }
 
         // GET api/<ProductsController>/5
@@ -214,7 +190,6 @@ namespace DiyorMarketApi.Controllers
 
             return table;
         }
-
         private static byte[] GenerateExcle(IEnumerable<ProductDto> productDto)
         {
             using XLWorkbook wb = new();
@@ -241,6 +216,17 @@ namespace DiyorMarketApi.Controllers
             wb.SaveAs(ms);
 
             return ms.ToArray();
+        }
+        private List<object> ConvertCategoriesToData(IEnumerable<ProductDto> products)
+        {
+            List<object> data = new List<object>();
+
+            foreach (var product in products)
+            {
+                data.Add(new { ID = product.Id, product.Name, product.Description, product.ExpireDate, product.SalePrice, product.SupplyPrice, product.QuantityInStock });
+            }
+
+            return data;
         }
     }
 }

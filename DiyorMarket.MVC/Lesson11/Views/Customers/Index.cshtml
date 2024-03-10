@@ -28,6 +28,47 @@
                         <button type="submit" class="btn btn-primary">
                             <i class="fa fa-search"></i> Search
                         </button>
+<div class="container mt-4">
+    <form asp-controller="Customers" asp-action="Index">
+        <input type="hidden" />
+        <div class="container" style="margin-top: 50px;">
+            <div class="row row-cols-sm-1 align-items-start">
+                <div class="d-flex flex-row justify-content-between gap-4">
+                    <!-- Search -->
+                    <div class="col-md-5 mb-4 ml-0 mr-10" style="margin-left: -25px">
+                        <div class="input-group">
+                            <input type="text" class="form-control" 
+                            placeholder="Search product..." 
+                            name="searchString" 
+                            value="@ViewBag.SearchString">
+                            <div class="input-group-append">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fa fa-search"></i> Search
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Action Buttons -->
+                    <div class="d-flex flex-row col-md-7 mb-4 justify-content-end" style="gap: 15px; margin-left: 22px">
+                        <div class="dropdown">
+                            <button class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fa-solid fa-download"></i> Download
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" asp-action="download" asp-route-type="xls">
+                                    <i class="fa-solid fa-file-excel"></i> Xls
+                                </a>
+                                <a class="dropdown-item" asp-action="download" asp-route-type="pdf">
+                                    <i class="fa-solid fa-file-pdf"></i> Pdf
+                                </a>
+                            </div>
+                        </div>
+                        <a class="btn btn-outline-info" asp-action="upload">
+                            <i class="fa-solid fa-upload"></i> Upload
+                        </a>
+                        <a class="btn btn-success" asp-action="create">
+                            <i class="fa fa-plus"></i> Create
+                        </a>
                     </div>
                 </div>
             </div>
