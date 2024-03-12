@@ -5,14 +5,14 @@
     Layout = "~/Views/Shared/_DataGridLayout.cshtml";
 }
 <!-- Navigation link -->
-<nav aria-label="breadcrumb" style="margin-left: 20px;">
+<nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="/dashboard/index"><i class="fa fa-home" style="color: white"></i></a></li>
         <li class="breadcrumb-item active" aria-current="page">Suppliers List</li>
     </ol>
 </nav>
-<form asp-controller="Suppliers" asp-action="Index" class="mb-2">
-    <div class="row" style="margin-top: 60px;">
+<form asp-controller="Suppliers" asp-action="Index">
+    <div class="row" style="margin-top: 50px;">
         <div class="d-flex justify-content-between">
             <!-- Search -->
             <div class="col-md-4 mb-4">
@@ -26,7 +26,7 @@
                 </div>
             </div>
             <!-- Action Buttons -->
-            <div class="d-flex flex-row mb-4" style="gap: 13px;">
+            <div class="d-flex flex-row mb-4" style="gap: 15px;">
                     <div class="dropdown">
                         <button class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fa-solid fa-download"></i> Download
