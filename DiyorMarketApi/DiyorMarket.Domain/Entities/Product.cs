@@ -13,6 +13,7 @@ namespace DiyorMarket.Domain.Entities
         public int QuantityInStock { get; set; }
         [Range(0, int.MaxValue)]
         public int LowQuantityAmount { get; set; }
+        public string ImageUrl { get; set; }
 
         public int CategoryId { get; set; }
         public Category Category { get; set; }

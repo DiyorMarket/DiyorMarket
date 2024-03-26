@@ -87,6 +87,11 @@ namespace DiyorMarket.Infrastructure.Persistence.Migrations
                     b.Property<DateTime>("ExpireDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
                     b.Property<int>("LowQuantityAmount")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")

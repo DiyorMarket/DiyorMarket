@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace DiyorMarket.Infrastructure.Persistence.Migrations
 {
-    public partial class RestoreMigrations : Migration
+    public partial class Initial_Create : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -79,6 +79,9 @@ namespace DiyorMarket.Infrastructure.Persistence.Migrations
                     Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     Price = table.Column<decimal>(type: "money", nullable: false),
                     ExpireDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    QuantityInStock = table.Column<int>(type: "int", nullable: false),
+                    LowQuantityAmount = table.Column<int>(type: "int", nullable: false, defaultValue: 5),
+                    ImageUrl = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     CategoryId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>

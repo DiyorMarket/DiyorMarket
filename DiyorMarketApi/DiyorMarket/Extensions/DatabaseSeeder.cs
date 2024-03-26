@@ -67,27 +67,28 @@ namespace DiyorMarket.Extensions
             var productNames = new List<string>();
             var products = new List<Product>();
 
+            var imagePaths = File.ReadAllLines("Constants/images.txt");
+
             foreach (var category in categories)
             {
                 var productsCount = new Random().Next(5, 10);
 
                 for (int i = 0; i < productsCount; i++)
                 {
-                    var quantityInStock=new Random().Next(5, 10);
+                    var quantityInStock = new Random().Next(5, 10);
                     var productName = _faker.Commerce.ProductName().FirstLetterToUpper();
-                    
+
                     int attempts = 0;
 
                     while (productNames.Contains(productName) && attempts < 100)
                     {
-                        productName = _faker.Commerce
-                            .ProductName()
-                            .FirstLetterToUpper();
-
+                        productName = _faker.Commerce.ProductName().FirstLetterToUpper();
                         attempts++;
                     }
 
                     productNames.Add(productName);
+
+                    var randomImagePath = imagePaths[new Random().Next(imagePaths.Length)];
 
                     products.Add(new Product
                     {
@@ -95,8 +96,9 @@ namespace DiyorMarket.Extensions
                         Description = _faker.Commerce.ProductDescription(),
                         Price = _faker.Random.Decimal(10_000, 200_000),
                         ExpireDate = _faker.Date.Between(DateTime.Now.AddYears(-3), DateTime.Now),
-                        QuantityInStock=quantityInStock,
+                        QuantityInStock = quantityInStock,
                         CategoryId = category.Id,
+                        ImageUrl = randomImagePath
                     });
                 }
             }

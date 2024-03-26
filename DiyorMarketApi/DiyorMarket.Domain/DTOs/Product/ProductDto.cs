@@ -12,6 +12,7 @@ namespace DiyorMarket.Domain.DTOs.Product
         public decimal SalePrice { get; init; }
         public decimal SupplyPrice { get; init; }
         public DateTime ExpireDate { get; init; }
+        public string ImageUrl { get; set; }
         public int QuantityInStock { get; set; }
         public int LowQuantityAmount { get; set; }
         public CategoryDto Category { get; init; }

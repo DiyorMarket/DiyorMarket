@@ -8,5 +8,6 @@ namespace DiyorMarket.Domain.DTOs.Product
 		decimal SalePrice,
 		decimal SupplyPrice,
 		DateTime ExpireDate,
+        string ImageUrl,
         int CategoryId);
 }   

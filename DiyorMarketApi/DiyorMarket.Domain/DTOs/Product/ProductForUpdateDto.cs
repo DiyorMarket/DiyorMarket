@@ -7,5 +7,6 @@
         decimal SalePrice,
         decimal SupplyPrice,
         DateTime ExpireDate,
+        string ImageUrl,
         int CategoryId);
 }

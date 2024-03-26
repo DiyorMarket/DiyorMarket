@@ -32,6 +32,8 @@ namespace DiyorMarket.Infrastructure.Persistence.Configurations
                 .HasColumnType("money");
             builder.Property(p => p.LowQuantityAmount)
                 .HasDefaultValue(5);
+            builder.Property(p => p.ImageUrl)
+                .HasMaxLength(500);
         }
     }
 }
