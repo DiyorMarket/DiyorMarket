@@ -3,6 +3,7 @@ using ClosedXML.Excel;
 using DiyorMarket.Domain.DTOs.Product;
 using DiyorMarket.Domain.Entities;
 using DiyorMarket.Domain.Interfaces.Services;
+using DiyorMarket.Helper;
 using DiyorMarket.ResourceParameters;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -32,13 +33,30 @@ namespace DiyorMarketApi.Controllers
         }
 
         // GET: api/<ProductsController>
-        [HttpGet]
-        public ActionResult<IEnumerable<ProductDto>> GetProductsAsync(
+        [HttpGet(Name = "GetProducts")]
+        public IActionResult GetProductsAsync(
             [FromQuery] ProductResourceParameters productResourceParameters)
         {
             var products = _productService.GetProducts(productResourceParameters);
+            var links = GetLinks(productResourceParameters, products.HasNextPage, products.HasPreviousPage);
+            var metadata = new
+            {
+                products.PageNumber,
+                products.PageSize,
+                products.HasNextPage,
+                products.HasPreviousPage,
+                products.TotalPages,
+                products.TotalCount
+            };
 
-            return Ok(products);
+            var result = new
+            {
+                data = products.Data,
+                links,
+                metadata
+            };
+
+            return Ok(result);
         }
 
         [HttpGet("export/xls")]
@@ -217,6 +235,7 @@ namespace DiyorMarketApi.Controllers
 
             return ms.ToArray();
         }
+
         private List<object> ConvertCategoriesToData(IEnumerable<ProductDto> products)
         {
             List<object> data = new List<object>();
@@ -227,6 +246,60 @@ namespace DiyorMarketApi.Controllers
             }
 
             return data;
+        }
+
+        private List<ResourceLink> GetLinks(
+            ProductResourceParameters resourceParameters,
+            bool hasNext,
+            bool hasPrevious)
+        {
+            List<ResourceLink> links = new();
+
+            links.Add(new ResourceLink(
+                "self",
+                CreateProductResourceLink(resourceParameters, ResourceType.CurrentPage),
+                "GET"));
+
+            if (hasNext)
+            {
+                links.Add(new ResourceLink(
+                "next",
+                CreateProductResourceLink(resourceParameters, ResourceType.NextPage),
+                "GET"));
+            }
+
+            if (hasPrevious)
+            {
+                links.Add(new ResourceLink(
+                "previous",
+                CreateProductResourceLink(resourceParameters, ResourceType.PreviousPage),
+                "GET"));
+            }
+
+            return links;
+        }
+
+        private string? CreateProductResourceLink(ProductResourceParameters resourceParameters, ResourceType type)
+        {
+            if (type == ResourceType.PreviousPage)
+            {
+                var parameters = resourceParameters with
+                {
+                    PageNumber = resourceParameters.PageNumber - 1,
+                };
+                return Url.Link("GetProducts", parameters);
+            }
+
+            if (type == ResourceType.NextPage)
+            {
+                var parameters = resourceParameters with
+                {
+                    PageNumber = resourceParameters.PageNumber + 1,
+                };
+                return Url.Link("GetProducts", parameters);   
+            }
+
+            return Url.Link("GetProducts", resourceParameters);
         }
     }
 }
