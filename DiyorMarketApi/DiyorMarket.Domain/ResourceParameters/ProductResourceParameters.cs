@@ -1,6 +1,6 @@
 ﻿namespace DiyorMarket.ResourceParameters
 {
-    public class ProductResourceParameters
+    public record ProductResourceParameters
     {
         private const int MaxPageSize = 25;
 
@@ -11,7 +11,6 @@
         public decimal? PriceGreaterThan { get; set; }
         public string OrderBy { get; set; } = "name";
         public DateTime? ExpireDate { get; set; }
-
         public int PageNumber { get; set; } = 1;
 
         private int _pageSize = 15;
