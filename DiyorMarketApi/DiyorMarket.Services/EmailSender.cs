@@ -6,7 +6,7 @@ namespace DiyorMarket.Services
 {
     public class EmailSender : IEmailSender
     {
-        public async Task SendEmail(string email, string subject, string massege)
+        public async Task<bool> SendEmail(string email, string subject, string massege)
         {
             MailAddress fromAddress = new MailAddress("gieosovazamat@gmail.com", "Azamat");
             MailAddress toAddress = new MailAddress(email);
@@ -22,12 +22,12 @@ namespace DiyorMarket.Services
             try
             {
                 await smtpClient.SendMailAsync(mailMessage);
-                // Письмо успешно отправлено
+                
+                return true;
             }
             catch (Exception ex)
             {
-                // Обработать исключение
-                throw new Exception($"Error: {ex}");
+                return false;
             }
             finally
             {
