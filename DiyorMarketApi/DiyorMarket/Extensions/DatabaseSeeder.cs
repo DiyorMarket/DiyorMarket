@@ -66,6 +66,8 @@ namespace DiyorMarket.Extensions
             var categories = context.Categories.ToList();
             var productNames = new List<string>();
             var products = new List<Product>();
+            string randomImagePath;
+            int imagePathNumber = 0;
 
             var imagePaths = File.ReadAllLines("Constants/images.txt");
 
@@ -88,7 +90,10 @@ namespace DiyorMarket.Extensions
 
                     productNames.Add(productName);
 
-                    var randomImagePath = imagePaths[new Random().Next(imagePaths.Length)];
+                    if(imagePaths.Length - 1 <= imagePathNumber)
+                    {
+                        imagePathNumber = new Random().Next(0, imagePaths.Length - 1);
+                    }
 
                     products.Add(new Product
                     {
@@ -98,8 +103,9 @@ namespace DiyorMarket.Extensions
                         ExpireDate = _faker.Date.Between(DateTime.Now.AddYears(-3), DateTime.Now),
                         QuantityInStock = quantityInStock,
                         CategoryId = category.Id,
-                        ImageUrl = randomImagePath
+                        ImageUrl = imagePaths[imagePathNumber],
                     });
+                    imagePathNumber++;
                 }
             }
             context.Products.AddRange(products);
