@@ -32,6 +32,11 @@ namespace DiyorMarket.Infrastructure.Persistence.Configurations
                 .IsRequired()
                 .HasMaxLength(255)
                 .HasAnnotation("MinLength", 8);
+
+            builder.Property(c => c.ResetCode)
+                .HasMaxLength(255);
+
+            builder.Property(c => c.ResetCodeCreatedAt);
         }
     }
 }
