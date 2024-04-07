@@ -2,6 +2,6 @@
 {
     public interface IEmailSender
     {
-        Task SendEmail(string email, string subject, string massege);
+        Task<bool> SendEmail(string email, string subject, string massege);
     }
 }
