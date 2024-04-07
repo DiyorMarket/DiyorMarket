@@ -276,6 +276,16 @@ namespace DiyorMarketApi.Controllers
                 "GET"));
             }
 
+            // TODO Fix this implementation or remove totally
+            foreach(var link in links)
+            {
+                var lastIndex = link.Href.IndexOf("/api");
+                if (lastIndex >= 0)
+                {
+                    link.Href = "https://0wn6qg77-7258.asse.devtunnels.ms" + link.Href.Substring(lastIndex);
+                }
+            }
+
             return links;
         }
 
