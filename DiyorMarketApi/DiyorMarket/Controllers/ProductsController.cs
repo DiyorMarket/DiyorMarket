@@ -248,68 +248,68 @@ namespace DiyorMarketApi.Controllers
             return data;
         }
 
-        private List<ResourceLink> GetLinks(
-            ProductResourceParameters resourceParameters,
-            bool hasNext,
-            bool hasPrevious)
-        {
-            List<ResourceLink> links = new();
-
-            links.Add(new ResourceLink(
-                "self",
-                CreateProductResourceLink(resourceParameters, ResourceType.CurrentPage),
-                "GET"));
-
-            if (hasNext)
+            private List<ResourceLink> GetLinks(
+                ProductResourceParameters resourceParameters,
+                bool hasNext,
+                bool hasPrevious)
             {
+                List<ResourceLink> links = new();
+
                 links.Add(new ResourceLink(
-                "next",
-                CreateProductResourceLink(resourceParameters, ResourceType.NextPage),
-                "GET"));
-            }
+                    "self",
+                    CreateProductResourceLink(resourceParameters, ResourceType.CurrentPage),
+                    "GET"));
 
-            if (hasPrevious)
-            {
-                links.Add(new ResourceLink(
-                "previous",
-                CreateProductResourceLink(resourceParameters, ResourceType.PreviousPage),
-                "GET"));
-            }
-
-            // TODO Fix this implementation or remove totally
-            foreach(var link in links)
-            {
-                var lastIndex = link.Href.IndexOf("/api");
-                if (lastIndex >= 0)
+                if (hasNext)
                 {
-                    link.Href = "https://0wn6qg77-7258.asse.devtunnels.ms" + link.Href.Substring(lastIndex);
+                    links.Add(new ResourceLink(
+                    "next",
+                    CreateProductResourceLink(resourceParameters, ResourceType.NextPage),
+                    "GET"));
                 }
-            }
 
-            return links;
-        }
-
-        private string? CreateProductResourceLink(ProductResourceParameters resourceParameters, ResourceType type)
-        {
-            if (type == ResourceType.PreviousPage)
-            {
-                var parameters = resourceParameters with
+                if (hasPrevious)
                 {
-                    PageNumber = resourceParameters.PageNumber - 1,
-                };
-                return Url.Link("GetProducts", parameters);
-            }
+                    links.Add(new ResourceLink(
+                    "previous",
+                    CreateProductResourceLink(resourceParameters, ResourceType.PreviousPage),
+                    "GET"));
+                }
 
-            if (type == ResourceType.NextPage)
-            {
-                var parameters = resourceParameters with
+                // TODO Fix this implementation or remove totally
+                foreach(var link in links)
                 {
-                    PageNumber = resourceParameters.PageNumber + 1,
-                };
-                return Url.Link("GetProducts", parameters);   
+                    var lastIndex = link.Href.IndexOf("/api");
+                    if (lastIndex >= 0)
+                    {
+                        link.Href = "https://0wn6qg77-7258.asse.devtunnels.ms" + link.Href.Substring(lastIndex);
+                    }
+                }
+
+                return links;
             }
 
-            return Url.Link("GetProducts", resourceParameters);
+            private string? CreateProductResourceLink(ProductResourceParameters resourceParameters, ResourceType type)
+            {
+                if (type == ResourceType.PreviousPage)
+                {
+                    var parameters = resourceParameters with
+                    {
+                        PageNumber = resourceParameters.PageNumber - 1,
+                    };
+                    return Url.Link("GetProducts", parameters);
+                }
+
+                if (type == ResourceType.NextPage)
+                {
+                    var parameters = resourceParameters with
+                    {
+                        PageNumber = resourceParameters.PageNumber + 1,
+                    };
+                    return Url.Link("GetProducts", parameters);   
+                }
+
+                return Url.Link("GetProducts", resourceParameters);
+            }
         }
-    }
 }
