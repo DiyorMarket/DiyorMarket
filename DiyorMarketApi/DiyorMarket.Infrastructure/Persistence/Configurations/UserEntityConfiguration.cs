@@ -40,7 +40,10 @@ namespace DiyorMarket.Infrastructure.Persistence.Configurations
                     .HasForeignKey<Customer>(e => e.UserId)
                     .IsRequired();
 
+            builder.Property(c => c.ResetCode)
+                .HasMaxLength(255);
 
+            builder.Property(c => c.ResetCodeCreatedAt);
         }
     }
 }

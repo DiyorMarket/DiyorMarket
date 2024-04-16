@@ -4,6 +4,7 @@ using DiyorMarket.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DiyorMarket.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(DiyorMarketDbContext))]
-    partial class DiyorMarketDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240402055004_Initial_Create_New_Database")]
+    partial class Initial_Create_New_Database
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -48,7 +50,12 @@ namespace DiyorMarket.Infrastructure.Persistence.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("FullName")
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("LastName")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
@@ -58,13 +65,7 @@ namespace DiyorMarket.Infrastructure.Persistence.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
 
                     b.ToTable("Customer", (string)null);
                 });
@@ -278,31 +279,9 @@ namespace DiyorMarket.Infrastructure.Persistence.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ResetCode")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<DateTime?>("ResetCodeCreatedAt")
-                        .HasColumnType("datetime2");
-
                     b.HasKey("Id");
 
                     b.ToTable("User", (string)null);
-                });
-
-            modelBuilder.Entity("DiyorMarket.Domain.Entities.Customer", b =>
-                {
-                    b.HasOne("DiyorMarket.Domain.Entities.User", "User")
-                        .WithOne("Customer")
-                        .HasForeignKey("DiyorMarket.Domain.Entities.Customer", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("DiyorMarket.Domain.Entities.Product", b =>
@@ -406,12 +385,6 @@ namespace DiyorMarket.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("DiyorMarket.Domain.Entities.Supply", b =>
                 {
                     b.Navigation("SupplyItems");
-                });
-
-            modelBuilder.Entity("DiyorMarket.Domain.Entities.User", b =>
-                {
-                    b.Navigation("Customer")
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

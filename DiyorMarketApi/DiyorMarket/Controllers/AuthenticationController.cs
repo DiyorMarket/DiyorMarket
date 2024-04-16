@@ -63,7 +63,7 @@ namespace DiyorMarket.Controllers
         }
 
         [HttpPost("register")]
-        public ActionResult Register(RegisterRequest request)
+        public async Task<ActionResult> Register(RegisterRequest request)
         {
             var existingUser = FindUser(request.Login);
             if (existingUser != null)
@@ -79,6 +79,13 @@ namespace DiyorMarket.Controllers
                 Phone = request.Phone,
                 Role = request.Role.ToLower().FirstLetterToUpper()
             };
+
+            bool isEmailSented = await _emailSender.SendEmail(request.Login, EmailConfigurations.Subject, EmailConfigurations.RegisterBody.Replace("{recipientName}", request.FullName));
+
+            if (!isEmailSented)
+            {
+                return StatusCode(500, "Failed to send email. Please try again later.");
+            }
 
             _context.Users.Add(user);
             _context.SaveChanges();
@@ -113,6 +120,86 @@ namespace DiyorMarket.Controllers
             return Ok(token);
         }
 
+        [HttpPost("forgotPassword")]
+        public async Task<ActionResult> ForgotPassword(ForgotPasswordRequest request)
+        {
+            var user = FindUser(request.Login);
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            var resetCode = GenerateResetCode();
+
+            bool isCodeSent = await _emailSender.SendEmail(request.Login, "Password Reset Code", $"Your reset code is: {resetCode}");
+
+            if (!isCodeSent)
+            {
+                return StatusCode(500, "Failed to send reset code. Please try again later.");
+            }
+
+            user.ResetCode = resetCode;
+            user.ResetCodeCreatedAt = DateTime.UtcNow;
+
+            _context.SaveChanges();
+
+            return Ok("Reset code sent successfully.");
+        }
+
+        [HttpPost("resetPassword")]
+        public ActionResult ResetPassword(ResetPasswordRequest request)
+        {
+            var user = FindUser(request.Login);
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            if (user.ResetCode != request.ResetCode)
+            {
+                return BadRequest("Invalid or expired reset code.");
+            }
+
+            if (user.ResetCodeCreatedAt.HasValue && (DateTime.UtcNow - user.ResetCodeCreatedAt.Value).TotalMinutes > 30)
+            {
+                return BadRequest("Reset code has expired. Please request a new one.");
+            }
+
+            user.Password = request.newPassword;
+            user.ResetCode = null;
+            user.ResetCodeCreatedAt = null;
+            _context.SaveChanges();
+
+            var securityKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes("anvarSekretKalitSozMalades"));
+            var signingCredentials = new SigningCredentials(securityKey,
+                SecurityAlgorithms.HmacSha256);
+
+            var claimsForToken = new List<Claim>();
+            claimsForToken.Add(new Claim("sub", user.Phone));
+            claimsForToken.Add(new Claim("name", user.Name));
+
+            var jwtSecurityToken = new JwtSecurityToken(
+                "anvar-api",
+                "anvar-mobile",
+                claimsForToken,
+                DateTime.UtcNow,
+                DateTime.UtcNow.AddDays(30),
+                signingCredentials);
+
+            var token = new JwtSecurityTokenHandler()
+                .WriteToken(jwtSecurityToken);
+
+            return Ok(token);
+        }
+
+        private string GenerateResetCode()
+        {
+            var random = new Random();
+            int resetCode = random.Next(1000, 9999);
+            return resetCode.ToString();
+        }
+
         private bool FindUser(string login, string password)
         {
             var user = _context.Users.FirstOrDefault(u => u.Login == login);
@@ -122,7 +209,6 @@ namespace DiyorMarket.Controllers
                 return false;
             }
 
-            //Send email afte Login
             _emailSender.SendEmail(user.Login, EmailConfigurations.Subject, EmailConfigurations.LoginBody.Replace("{recipientName}", user.Name));
 
             return true;
