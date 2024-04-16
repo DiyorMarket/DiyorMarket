@@ -83,7 +83,7 @@ namespace DiyorMarket.Controllers
             _context.Users.Add(user);
             _context.SaveChanges();
 
-            if(request.Role.Trim() == "customer")
+            if(request.Role.Trim().ToLower()== "customer")
             {
                 AddCustomerWithUser(user);
             }
@@ -135,13 +135,11 @@ namespace DiyorMarket.Controllers
 
         private void AddCustomerWithUser(User user)
         {
-            var userPharam = _context.Users.FirstOrDefault(user);
-
             var customer = new Customer
             {
-                FullName = userPharam.Name,
-                PhoneNumber = userPharam.Phone,
-                UserId = userPharam.Id
+                FullName = user.Name,
+                PhoneNumber = user.Phone,
+                UserId = user.Id
             };
 
             _context.Customers.Add(customer);
