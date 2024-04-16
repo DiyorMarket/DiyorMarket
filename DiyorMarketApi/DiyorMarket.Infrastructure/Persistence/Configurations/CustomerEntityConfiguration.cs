@@ -12,10 +12,8 @@ namespace DiyorMarket.Infrastructure.Persistence.Configurations
 
             builder.HasKey(c => c.Id);
 
-            builder.Property(c => c.FirstName)
+            builder.Property(c => c.FullName)
                 .IsRequired()
-                .HasMaxLength(255);
-            builder.Property(c => c.LastName)
                 .HasMaxLength(255);
             builder.Property(c => c.PhoneNumber)
                 .HasMaxLength(255);
@@ -23,6 +21,7 @@ namespace DiyorMarket.Infrastructure.Persistence.Configurations
             builder.HasMany(c => c.Sales)
                 .WithOne(s => s.Customer)
                 .HasForeignKey(s => s.CustomerId);
+
         }
     }
 }

@@ -26,8 +26,7 @@ namespace DiyorMarket.Services
 
             if (!string.IsNullOrWhiteSpace(customerResourceParameters.SearchString))
             {
-                query = query.Where(x => x.FirstName.Contains(customerResourceParameters.SearchString)
-                || x.LastName.Contains(customerResourceParameters.SearchString)
+                query = query.Where(x => x.FullName.Contains(customerResourceParameters.SearchString)
                 || x.PhoneNumber.Contains(customerResourceParameters.SearchString));
             }
 
@@ -35,13 +34,11 @@ namespace DiyorMarket.Services
             {
                 query = customerResourceParameters.OrderBy.ToLowerInvariant() switch
                 {
-                    "firstname" => query.OrderBy(x => x.FirstName),
-                    "firstnamedesc" => query.OrderByDescending(x => x.FirstName),
-                    "lastname" => query.OrderBy(x => x.LastName),
-                    "lastnamedesc" => query.OrderByDescending(x => x.LastName),
+                    "firstname" => query.OrderBy(x => x.FullName),
+                    "firstnamedesc" => query.OrderByDescending(x => x.FullName),
                     "phonenumber" => query.OrderBy(x => x.PhoneNumber),
                     "phonenumberdesc" => query.OrderByDescending(x => x.PhoneNumber),
-                    _ => query.OrderBy(x => x.FirstName),
+                    _ => query.OrderBy(x => x.FullName),
                 };
             }
 

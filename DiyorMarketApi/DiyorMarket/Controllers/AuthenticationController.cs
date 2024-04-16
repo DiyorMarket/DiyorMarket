@@ -1,6 +1,7 @@
 ﻿using DiyorMarket.Constants;
 using DiyorMarket.Domain.Entities;
 using DiyorMarket.Domain.Interfaces.Services;
+using DiyorMarket.Extensions;
 using DiyorMarket.Infrastructure.Persistence;
 using DiyorMarket.LoginModels;
 using Microsoft.AspNetCore.Mvc;
@@ -76,6 +77,7 @@ namespace DiyorMarket.Controllers
                 Password = request.Password,
                 Name = request.FullName,
                 Phone = request.Phone,
+                Role = request.Role.ToLower().FirstLetterToUpper()
             };
 
             bool isEmailSented = await _emailSender.SendEmail(request.Login, EmailConfigurations.Subject, EmailConfigurations.RegisterBody.Replace("{recipientName}", request.FullName));
@@ -86,9 +88,14 @@ namespace DiyorMarket.Controllers
             }
 
             _context.Users.Add(user);
-
             _context.SaveChanges();
-        
+
+            if(request.Role.Trim().ToLower()== "customer")
+            {
+                AddCustomerWithUser(user);
+            }
+
+            _emailSender.SendEmail(request.Login, EmailConfigurations.Subject, EmailConfigurations.RegisterBody.Replace("{recipientName}", request.FullName));
 
             var securityKey = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes("anvarSekretKalitSozMalades"));
@@ -210,6 +217,19 @@ namespace DiyorMarket.Controllers
         private User FindUser(string login)
         {
             return _context.Users.FirstOrDefault(u => u.Login == login);
+        }
+
+        private void AddCustomerWithUser(User user)
+        {
+            var customer = new Customer
+            {
+                FullName = user.Name,
+                PhoneNumber = user.Phone,
+                UserId = user.Id
+            };
+
+            _context.Customers.Add(customer);
+            _context.SaveChanges();
         }
 
         static User Authenticate(string login, string password)
