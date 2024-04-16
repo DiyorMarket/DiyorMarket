@@ -8,5 +8,8 @@ namespace DiyorMarket.Domain.Entities
         public string? Phone { get; set; }
         public string Login { get; set; }
         public string Password { get; set; }
+        public string Role { get; set; }
+
+        public Customer Customer { get; set; }
     }
 }

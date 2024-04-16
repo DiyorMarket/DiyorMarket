@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -32,6 +34,13 @@ namespace DiyorMarket.Infrastructure.Persistence.Configurations
                 .IsRequired()
                 .HasMaxLength(255)
                 .HasAnnotation("MinLength", 8);
+
+            builder.HasOne(e => e.Customer)
+                    .WithOne(e => e.User)
+                    .HasForeignKey<Customer>(e => e.UserId)
+                    .IsRequired();
+
+
         }
     }
 }

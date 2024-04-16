@@ -16,6 +16,7 @@ namespace DiyorMarket.Extensions
 
             CreateCategories(context);
             CreateProducts(context);
+            CreateUsers(context);
             CreateCustomers(context);
             CreateSales(context);
             CreateSaleItems(context);
@@ -111,19 +112,49 @@ namespace DiyorMarket.Extensions
             context.Products.AddRange(products);
             context.SaveChanges();
         }
+        public static void CreateUsers(DiyorMarketDbContext context)
+        {
+            if (context.Users.Any()) return;
+
+            var users = new List<User>();
+            var roles = new string[]
+            {
+                "Customer",
+                "Manager"
+            };
+
+            for(int i = 0; i <= 35;  i++)
+            {
+                users.Add(new User
+                {
+                    Name = _faker.Person.FullName,
+                    Phone = _faker.Phone.PhoneNumber("+998-(##) ###-##-##"),
+                    Login = _faker.Person.Email,
+                    Password = _faker.Random.Int(min: 1000, max: 9999).ToString(),
+                    Role = _faker.PickRandom(roles)
+                });
+            }
+
+            context.Users.AddRange(users);
+            context.SaveChanges();
+        }
         private static void CreateCustomers(DiyorMarketDbContext context)
         {
             if (context.Customers.Any()) return;
+            var users = context.Users.ToList();
             List<Customer> customers = new List<Customer>();
 
-            for (int i = 0; i < 100; i++)
+            foreach (var user in users)
             {
-                customers.Add(new Customer()
+                if(user.Role.ToLower() == "customer")
                 {
-                    FirstName = _faker.Name.FirstName(),
-                    LastName = _faker.Name.LastName(),
-                    PhoneNumber = _faker.Phone.PhoneNumber("+998-(##) ###-##-##")
-                });
+                    customers.Add(new Customer()
+                    {
+                        FullName = user.Name,
+                        PhoneNumber = user.Phone,
+                        UserId = user.Id,
+                    });
+                }
             }
 
             context.Customers.AddRange(customers);

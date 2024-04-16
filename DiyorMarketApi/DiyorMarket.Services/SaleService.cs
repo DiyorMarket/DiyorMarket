@@ -136,7 +136,7 @@ namespace DiyorMarket.Services
             if (!string.IsNullOrWhiteSpace(saleResourceParameters.SearchString))
             {
                 query = query.Include(s => s.Customer)
-                    .Where(x => x.Customer.FirstName.ToLower()
+                    .Where(x => x.Customer.FullName.ToLower()
                 .Contains(saleResourceParameters.SearchString.ToLower()));
             }
 
