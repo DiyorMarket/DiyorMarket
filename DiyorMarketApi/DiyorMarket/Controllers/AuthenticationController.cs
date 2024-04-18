@@ -14,6 +14,7 @@ namespace DiyorMarket.Controllers
 {
     [Route("api/auth")]
     [ApiController]
+
     public class AuthenticationController : ControllerBase
     {
         private readonly DiyorMarketDbContext _context;
@@ -59,7 +60,16 @@ namespace DiyorMarket.Controllers
             var token = new JwtSecurityTokenHandler()
                 .WriteToken(jwtSecurityToken);
 
-            return Ok(token);
+            var response = new
+            {
+                Token = token,
+                UserId = user.Id,
+                UserName = user.Name,
+                UserEmail = user.Login,
+                UserPhone = user.Phone,
+            };
+
+            return Ok(response);
         }
 
         [HttpPost("register")]
@@ -232,15 +242,23 @@ namespace DiyorMarket.Controllers
             _context.SaveChanges();
         }
 
-        static User Authenticate(string login, string password)
+        private User Authenticate(string login, string password)
         {
-            return new User()
+            var user = _context.Users.FirstOrDefault(u => u.Login == login);
+
+            if (user != null && user.Password == password)
             {
-                Login = login,
-                Password = password,
-                Name = "Anvar",
-                Phone = "124123"
-            };
-        }
+                return new User()
+                {
+                    Id = user.Id,
+                    Login = user.Login,
+                    Password = user.Password,
+                    Name = user.Name,
+                    Phone = user.Phone
+                };
+            }
+
+            return null;
+        }   
     }
 }
