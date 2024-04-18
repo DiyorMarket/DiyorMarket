@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using DiyorMarket.Domain.DTOs.Sale;
 using DiyorMarket.Domain.DTOs.SaleItem;
 using DiyorMarket.Domain.Entities;
 
@@ -7,7 +6,7 @@ namespace DiyorMarket.Domain.Mappings
 {
     public class SaleItemMappings : Profile
     {
-        public SaleItemMappings() 
+        public SaleItemMappings()
         {
             CreateMap<SaleItemDto, SaleItem>();
             CreateMap<SaleItem, SaleItemDto>()

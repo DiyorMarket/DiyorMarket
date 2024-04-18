@@ -282,7 +282,7 @@ namespace DiyorMarketApi.Controllers
                     var lastIndex = link.Href.IndexOf("/api");
                     if (lastIndex >= 0)
                     {
-                        link.Href = "https://0wn6qg77-7258.asse.devtunnels.ms" + link.Href.Substring(lastIndex);
+                        link.Href = "https://xsx0lcnz-7258.asse.devtunnels.ms" + link.Href.Substring(lastIndex);
                     }
                 }
 

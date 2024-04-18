@@ -120,6 +120,7 @@ namespace DiyorMarket.Services
         {
             var query = _context.Sales
                 .Include(x => x.SaleItems)
+                .ThenInclude(p=>p.Product)
                 .IgnoreAutoIncludes()
                 .AsQueryable();
 
