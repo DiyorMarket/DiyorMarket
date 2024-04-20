@@ -1,11 +1,14 @@
 ﻿using System.Collections.Generic;
+using Inflow.Core.Sale;
 
 namespace Inflow.Core.Customer
 {
-    public record CustomerDto(
-        int Id,
-        string FullName,
-        string PhoneNumber,
-        int UserId,
-        ICollection<SaleDto> Sales);
+    public class CustomerDto
+    {
+        public int Id { get; set; }
+        public string FullName { get; set; }
+        public string PhoneNumber { get; set; }
+        public int UserId { get; set; }
+        public ICollection<SaleDto> Sales { get; set; }
+    }
 }
