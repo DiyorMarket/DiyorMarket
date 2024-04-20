@@ -1,8 +1,10 @@
-﻿namespace DiyorMarket.Domain.DTOs.SupplyItem
+﻿namespace Inflow.Core.SupplyItem
 {
-    public record SupplyItemForCreateDto(
-        int Quantity,
-        decimal UnitPrice,
-        int ProductId,
-        int SupplyId);
+    public class SupplyItemForCreateDto
+    {
+        public int Quantity { get; set; }
+        public decimal UnitPrice { get; set; }
+        public int ProductId { get; set; }
+        public int SupplyId { get; set; }
+    }
 }

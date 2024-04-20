@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Inflow.Core.Category;
+using Inflow.Core.SaleItem;
+using Inflow.Core.SupplyItem;
+using System;
 using System.Collections.Generic;
 
 namespace Inflow.Core.Product

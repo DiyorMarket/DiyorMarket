@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Inflow.Core.Supply;
+using System.Collections.Generic;
 
 namespace Inflow.Core.Supplier
 {

@@ -1,7 +1,9 @@
 ﻿namespace Inflow.Core.Customer
 {
-    public record CustomerForUpdateDto(
-        int Id,
-        string FullName,
-        string PhoneNumber);
+    public class CustomerForUpdateDto
+    {
+        public int Id { get; set; }
+        public string FullName { get; set; }
+        public string PhoneNumber { get; set; }
+    }
 }

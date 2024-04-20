@@ -3,18 +3,34 @@ using System.Collections.Generic;
 
 namespace Inflow.Core.Dashboard
 {
-    public record DashboardDto(Summary Summary,
-        IEnumerable<SalesByCategoryDto> SalesByCategories,
-        IEnumerable<SpliteChartData> SplineCharts,
-        IEnumerable<TransactionDto> Transactions);
-    public record Summary(decimal Total, int SalesCount, int SuppliesCount);
-    public record SalesByCategoryDto(string Category, int SalesCount);
+    public class DashboardDto
+    {
+        public Summary Summary { get; set; }
+        public IEnumerable<SalesByCategoryDto> SalesByCategories { get; set; }
+        public IEnumerable<SpliteChartData> SplineCharts { get; set; }
+        public IEnumerable<TransactionDto> Transactions { get; set; }
+    }
+
+    public class Summary
+    {
+        public decimal Total { get; set; }
+        public int SalesCount { get; set; }
+        public int SuppliesCount { get; set; }
+    }
+
+    public class SalesByCategoryDto
+    {
+        public string Category { get; set; }
+        public int SalesCount { get; set; }
+    }
+
     public class SpliteChartData
     {
         public string Month { get; set; }
         public decimal Income { get; set; }
         public decimal Expense { get; set; }
     }
+
     public class TransactionDto
     {
         public int Id { get; set; }
