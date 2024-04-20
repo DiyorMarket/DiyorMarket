@@ -1,6 +1,8 @@
 ﻿namespace Inflow.Core.Category
 {
-    public record CategoryForUpdateDto(
-        int Id,
-        string Name);
+    public class CategoryForUpdateDto
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+    }
 }

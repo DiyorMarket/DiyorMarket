@@ -1,4 +1,7 @@
 ﻿namespace Inflow.Core.Category
 {
-    public record CategoryForCreateDto(string Name);
+    public class CategoryForCreateDto
+    {
+        public string Name { get; set; }
+    }
 }

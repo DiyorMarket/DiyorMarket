@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Inflow.Core.Product;
+using System.Collections.Generic;
 
 namespace Inflow.Core.Category
 {
