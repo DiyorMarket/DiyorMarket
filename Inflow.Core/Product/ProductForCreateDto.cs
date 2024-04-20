@@ -1,13 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
 
-namespace DiyorMarket.Domain.DTOs.Product
+namespace Inflow.Core.Product
 {
-    public record ProductForCreateDto(
-        string Name,
-        string Description,
-		decimal SalePrice,
-		decimal SupplyPrice,
-		DateTime ExpireDate,
-        string ImageUrl,
-        int CategoryId);
-}   
+    public class ProductForCreateDto
+    {
+        public string Name { get; }
+        public string Description { get; }
+        public decimal SalePrice { get; }
+        public decimal SupplyPrice { get; }
+        public DateTime ExpireDate { get; }
+        public string ImageUrl { get; }
+        public int CategoryId { get; }
+    }
+}

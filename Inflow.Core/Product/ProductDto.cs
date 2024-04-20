@@ -1,22 +1,21 @@
-﻿using DiyorMarket.Domain.DTOs.Category;
-using DiyorMarket.Domain.DTOs.SaleItem;
-using DiyorMarket.Domain.DTOs.SupplyItem;
+﻿using System;
+using System.Collections.Generic;
 
-namespace DiyorMarket.Domain.DTOs.Product
+namespace Inflow.Core.Product
 {
-    public record ProductDto
+    public class ProductDto
     {
-        public int Id { get; init; }
-        public string Name { get; init; }
-        public string Description { get; init; }
-        public decimal SalePrice { get; init; }
-        public decimal SupplyPrice { get; init; }
-        public DateTime ExpireDate { get; init; }
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public decimal SalePrice { get; set; }
+        public decimal SupplyPrice { get; set; }
+        public DateTime ExpireDate { get; set; }
         public string ImageUrl { get; set; }
         public int QuantityInStock { get; set; }
         public int LowQuantityAmount { get; set; }
-        public CategoryDto Category { get; init; }
-        public ICollection<SaleItemDto> SaleItems { get; init; }
-        public ICollection<SupplyItemDto> SupplyItems { get; init; }
+        public CategoryDto Category { get; set; }
+        public ICollection<SaleItemDto> SaleItems { get; set; }
+        public ICollection<SupplyItemDto> SupplyItems { get; set; }
     }
 }

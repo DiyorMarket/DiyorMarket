@@ -1,4 +1,6 @@
-﻿namespace Inflow.Core.Category
+﻿using System.Collections.Generic;
+
+namespace Inflow.Core.Category
 {
     public class CategoryDto
     {

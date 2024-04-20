@@ -1,4 +1,6 @@
-﻿namespace Inflow.Core.Customer
+﻿using System.Collections.Generic;
+
+namespace Inflow.Core.Customer
 {
     public record CustomerDto(
         int Id,
