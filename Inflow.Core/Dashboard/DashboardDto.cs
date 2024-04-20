@@ -1,21 +1,25 @@
-﻿namespace DiyorMarket.Domain.DTOs.Dashboard;
+﻿using System;
+using System.Collections.Generic;
 
-public record DashboardDto(Summary Summary, 
-    IEnumerable<SalesByCategoryDto> SalesByCategories,
-    IEnumerable<SpliteChartData> SplineCharts,
-    IEnumerable<TransactionDto> Transactions);
-public record Summary(decimal Total, int SalesCount, int SuppliesCount);
-public record SalesByCategoryDto (string Category, int SalesCount);
-public class SpliteChartData
+namespace Inflow.Core.Dashboard
 {
-    public string Month { get; set; }
-    public decimal Income { get; set; }
-    public decimal Expense { get; set; }
-}
-public class TransactionDto
-{
-    public int Id { get; set; }
-    public string Type { get; set; }
-    public decimal Amount { get; set; }
-    public DateTime Date { get; set; }
+    public record DashboardDto(Summary Summary,
+        IEnumerable<SalesByCategoryDto> SalesByCategories,
+        IEnumerable<SpliteChartData> SplineCharts,
+        IEnumerable<TransactionDto> Transactions);
+    public record Summary(decimal Total, int SalesCount, int SuppliesCount);
+    public record SalesByCategoryDto(string Category, int SalesCount);
+    public class SpliteChartData
+    {
+        public string Month { get; set; }
+        public decimal Income { get; set; }
+        public decimal Expense { get; set; }
+    }
+    public class TransactionDto
+    {
+        public int Id { get; set; }
+        public string Type { get; set; }
+        public decimal Amount { get; set; }
+        public DateTime Date { get; set; }
+    }
 }
