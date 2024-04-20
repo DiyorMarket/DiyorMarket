@@ -1,9 +1,11 @@
-﻿namespace DiyorMarket.Domain.DTOs.Supplier
+﻿namespace Inflow.Core.Supplier
 {
-    public record SupplierForUpdateDto(
-        int Id,
-        string FirstName,
-        string LastName,
-        string PhoneNumber,
-        string Company);
+    public class SupplierForUpdateDto
+    {
+        public int Id { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string PhoneNumber { get; set; }
+        public string Company { get; set; }
+    }
 }

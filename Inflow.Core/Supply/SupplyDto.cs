@@ -1,12 +1,14 @@
-﻿using DiyorMarket.Domain.DTOs.Supplier;
-using DiyorMarket.Domain.DTOs.SupplyItem;
+﻿using System;
+using System.Collections.Generic;
 
-namespace DiyorMarket.Domain.DTOs.Supply
+namespace Inflow.Core.Supply
 {
-    public record SupplyDto(
-        int Id,
-        DateTime SupplyDate,
-        decimal TotalDue,
-        int SupplierId,
-        ICollection<SupplyItemDto> SupplyItems);
+    public class SupplyDto
+    {
+        public int Id { get; set; }
+        public DateTime SupplyDate { get; set; }
+        public decimal TotalDue { get; set; }
+        public int SupplierId { get; set; }
+        public ICollection<SupplyItemDto> SupplyItems { get; set; }
+    }
 }

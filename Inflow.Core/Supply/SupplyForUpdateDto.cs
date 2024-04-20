@@ -1,7 +1,11 @@
-﻿namespace DiyorMarket.Domain.DTOs.Supply
+﻿using System;
+
+namespace Inflow.Core.Supply
 {
-    public record SupplyForUpdateDto(
-        int Id,
-        DateTime SupplyDate,
-        int SupplierId);
+    public class SupplyForUpdateDto
+    {
+        public int Id { get; set; }
+        public DateTime SupplyDate { get; set; }
+        public int SupplierId { get; set; }
+    }
 }
