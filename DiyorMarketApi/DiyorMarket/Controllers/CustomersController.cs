@@ -45,6 +45,20 @@ namespace DiyorMarket.Controllers
             return Ok(customer);
         }
 
+        //[HttpGet("{id}", Name = "GetCustomerByUserId")]
+        //public ActionResult<CustomerDto> GetCustomerByUserId(int userId)
+        //{
+        //    var customer = _customerService.GetCustomerByUserId(userId);
+
+        //    if (customer is null)
+        //    {
+        //        return NotFound($"Customer with id: {userId} does not exist.");
+        //    }
+
+        //    return Ok(customer);
+        //}
+
+
         [HttpGet("export/xls")]
         public ActionResult ExportCustomers()
         {

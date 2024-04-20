@@ -100,7 +100,7 @@ namespace DiyorMarket.Controllers
             _context.Users.Add(user);
             _context.SaveChanges();
 
-            if(request.Role.Trim().ToLower()== "customer")
+            if(request.Role.Trim().ToLower() == "customer")
             {
                 AddCustomerWithUser(user);
             }

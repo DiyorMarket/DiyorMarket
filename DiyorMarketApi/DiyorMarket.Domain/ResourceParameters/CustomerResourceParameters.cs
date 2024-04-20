@@ -5,6 +5,7 @@
         private const int MaxPageSize = 25;
 
         public string? SearchString { get; set; }
+        public int? UserId { get; set; }
         public string OrderBy { get; set; } = "firstname";
 
         public int PageNumber { get; set; } = 1;

@@ -10,6 +10,7 @@ namespace DiyorMarket.Domain.Interfaces.Services
         IEnumerable<CustomerDto> GetCustomers();
         GetBaseResponse<CustomerDto> GetCustomers(CustomerResourceParameters customerResourceParameters);
         CustomerDto? GetCustomerById(int id);
+        CustomerDto? GetCustomerByUserId(int userId);
         CustomerDto CreateCustomer(CustomerForCreateDto customerToCreate);
         CustomerDto UpdateCustomer(CustomerForUpdateDto customerToUpdate);
         void DeleteCustomer(int id);

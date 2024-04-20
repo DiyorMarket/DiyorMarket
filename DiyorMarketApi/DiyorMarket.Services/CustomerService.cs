@@ -6,6 +6,7 @@ using DiyorMarket.Domain.Pagniation;
 using DiyorMarket.Domain.ResourceParameters;
 using DiyorMarket.Domain.Responses;
 using DiyorMarket.Infrastructure.Persistence;
+using DiyorMarket.ResourceParameters;
 
 namespace DiyorMarket.Services
 {
@@ -23,6 +24,11 @@ namespace DiyorMarket.Services
         public GetBaseResponse<CustomerDto> GetCustomers(CustomerResourceParameters customerResourceParameters)
         {
             var query = _context.Customers.AsQueryable();
+
+            if (customerResourceParameters.UserId is not null && customerResourceParameters.UserId != 0)
+            {
+                query = query.Where(x => x.UserId == customerResourceParameters.UserId);
+            }
 
             if (!string.IsNullOrWhiteSpace(customerResourceParameters.SearchString))
             {
@@ -49,6 +55,15 @@ namespace DiyorMarket.Services
             var paginatedResult = new PaginatedList<CustomerDto>(customerDtos, customers.TotalCount, customers.CurrentPage, customers.PageSize);
 
             return paginatedResult.ToResponse();
+        }
+
+        public CustomerDto? GetCustomerByUserId(int userId)
+        {
+            var customer = _context.Customers.FirstOrDefault(x => x.UserId == userId);
+
+            var customerDto = _mapper.Map<CustomerDto>(customer);
+
+            return customerDto;
         }
 
         public IEnumerable<CustomerDto> GetCustomers()
