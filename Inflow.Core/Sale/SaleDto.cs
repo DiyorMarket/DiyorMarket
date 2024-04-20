@@ -1,11 +1,14 @@
-﻿using DiyorMarket.Domain.DTOs.SaleItem;
+﻿using System;
+using System.Collections.Generic;
 
-namespace DiyorMarket.Domain.DTOs.Sale
+namespace Inflow.Core.Sale
 {
-    public record SaleDto(
-        int Id,
-        DateTime SaleDate,
-        int CustomerId,
-        decimal TotalDue,
-        ICollection<SaleItemDto> SaleItems);
- }
+    public class SaleDto
+    {
+        public int Id { get; set; }
+        public DateTime SaleDate { get; set; }
+        public int CustomerId { get; set; }
+        public decimal TotalDue { get; set; }
+        public ICollection<SaleItemDto> SaleItems { get; set; }
+    }
+}

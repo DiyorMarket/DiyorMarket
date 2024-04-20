@@ -1,9 +1,12 @@
-﻿using DiyorMarket.Domain.DTOs.SaleItem;
+﻿using System;
+using System.Collections.Generic;
 
-namespace DiyorMarket.Domain.DTOs.Sale
+namespace Inflow.Core.Sale
 {
-    public record SaleForCreateDto(
-        DateTime SaleDate,
-        int CustomerId,
-        ICollection<SaleItemForCreateDto> SaleItems);
+    public class SaleForCreateDto
+    {
+        public DateTime SaleDate { get; set; }
+        public int CustomerId { get; set; }
+        public ICollection<SaleItemForCreateDto> SaleItems { get; set; }
+    }
 }

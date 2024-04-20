@@ -1,7 +1,11 @@
-﻿namespace DiyorMarket.Domain.DTOs.Sale
+﻿using System;
+
+namespace Inflow.Core.Sale
 {
-    public record SaleForUpdateDto(
-        int Id,
-        DateTime SaleDate,
-        int CustomerId);
+    public class SaleForUpdateDto
+    {
+        public int Id { get; set; }
+        public DateTime SaleDate { get; set; }
+        public int CustomerId { get; set; }
+    }
 }
