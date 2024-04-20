@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace DiyorMarket.Infrastructure.Persistence.Migrations
+namespace DiyorMarket.Infrastructure.Persistensce.Migrations
 {
-    public partial class Initial_Create : Migration
+    public partial class Initialcreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -20,21 +20,6 @@ namespace DiyorMarket.Infrastructure.Persistence.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Category", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Customer",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    FirstName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Customer", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -62,7 +47,10 @@ namespace DiyorMarket.Infrastructure.Persistence.Migrations
                     Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     Phone = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
                     Login = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false)
+                    Password = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    Role = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ResetCode = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    ResetCodeCreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -96,26 +84,6 @@ namespace DiyorMarket.Infrastructure.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Sale",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    SaleDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CustomerId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Sale", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Sale_Customer_CustomerId",
-                        column: x => x.CustomerId,
-                        principalTable: "Customer",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Supply",
                 columns: table => new
                 {
@@ -131,6 +99,75 @@ namespace DiyorMarket.Infrastructure.Persistence.Migrations
                         name: "FK_Supply_Supplier_SupplierId",
                         column: x => x.SupplierId,
                         principalTable: "Supplier",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Customer",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FullName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Customer", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Customer_User_UserId",
+                        column: x => x.UserId,
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SupplyItem",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Quantity = table.Column<int>(type: "integer", nullable: false),
+                    UnitPrice = table.Column<decimal>(type: "money", nullable: false),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    SupplyId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SupplyItem", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SupplyItem_Product_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Product",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_SupplyItem_Supply_SupplyId",
+                        column: x => x.SupplyId,
+                        principalTable: "Supply",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Sale",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SaleDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CustomerId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Sale", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Sale_Customer_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customer",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -163,33 +200,11 @@ namespace DiyorMarket.Infrastructure.Persistence.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "SupplyItem",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Quantity = table.Column<int>(type: "integer", nullable: false),
-                    UnitPrice = table.Column<decimal>(type: "money", nullable: false),
-                    ProductId = table.Column<int>(type: "int", nullable: false),
-                    SupplyId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_SupplyItem", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_SupplyItem_Product_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "Product",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_SupplyItem_Supply_SupplyId",
-                        column: x => x.SupplyId,
-                        principalTable: "Supply",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
+            migrationBuilder.CreateIndex(
+                name: "IX_Customer_UserId",
+                table: "Customer",
+                column: "UserId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Product_CategoryId",
@@ -236,9 +251,6 @@ namespace DiyorMarket.Infrastructure.Persistence.Migrations
                 name: "SupplyItem");
 
             migrationBuilder.DropTable(
-                name: "User");
-
-            migrationBuilder.DropTable(
                 name: "Sale");
 
             migrationBuilder.DropTable(
@@ -255,6 +267,9 @@ namespace DiyorMarket.Infrastructure.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "Supplier");
+
+            migrationBuilder.DropTable(
+                name: "User");
         }
     }
 }

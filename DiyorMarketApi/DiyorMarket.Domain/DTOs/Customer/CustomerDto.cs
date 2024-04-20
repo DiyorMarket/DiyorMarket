@@ -6,5 +6,6 @@ namespace DiyorMarket.Domain.DTOs.Customer
         int Id,
         string FullName,
         string PhoneNumber,
+        int UserId,
         ICollection<SaleDto> Sales);
 }
