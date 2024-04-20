@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiyorMarket.Domain", "Diyor
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiyorMarket.Infrastructure", "DiyorMarket.Infrastructure\DiyorMarket.Infrastructure.csproj", "{FEFFAA03-157B-41C4-933D-967E75E1A412}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiyorMarket.Services", "DiyorMarket.Services\DiyorMarket.Services.csproj", "{E3191EB4-D24F-435D-BB60-903B8F70FAEC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiyorMarket.Services", "DiyorMarket.Services\DiyorMarket.Services.csproj", "{E3191EB4-D24F-435D-BB60-903B8F70FAEC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Inflow.Core", "..\Inflow.Core\Inflow.Core.csproj", "{74DFC362-AB0C-4932-A568-2F895BDADCE3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{E3191EB4-D24F-435D-BB60-903B8F70FAEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E3191EB4-D24F-435D-BB60-903B8F70FAEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E3191EB4-D24F-435D-BB60-903B8F70FAEC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{74DFC362-AB0C-4932-A568-2F895BDADCE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74DFC362-AB0C-4932-A568-2F895BDADCE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74DFC362-AB0C-4932-A568-2F895BDADCE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{74DFC362-AB0C-4932-A568-2F895BDADCE3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
