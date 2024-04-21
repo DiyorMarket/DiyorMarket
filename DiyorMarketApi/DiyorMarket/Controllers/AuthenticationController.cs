@@ -127,7 +127,16 @@ namespace DiyorMarket.Controllers
             var token = new JwtSecurityTokenHandler()
                 .WriteToken(jwtSecurityToken);
 
-            return Ok(token);
+            var response = new
+            {
+                Token = token,
+                UserId = user.Id,
+                UserName = user.Name,
+                UserEmail = user.Login,
+                UserPhone = user.Phone,
+            };
+
+            return Ok(response);
         }
 
         [HttpPost("forgotPassword")]
@@ -200,7 +209,16 @@ namespace DiyorMarket.Controllers
             var token = new JwtSecurityTokenHandler()
                 .WriteToken(jwtSecurityToken);
 
-            return Ok(token);
+            var response = new
+            {
+                Token = token,
+                UserId = user.Id,
+                UserName = user.Name,
+                UserEmail = user.Login,
+                UserPhone = user.Phone,
+            };
+
+            return Ok(response);
         }
 
         private string GenerateResetCode()
