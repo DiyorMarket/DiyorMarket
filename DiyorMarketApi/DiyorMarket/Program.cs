@@ -18,13 +18,15 @@ builder.Services.AddControllers()
                 })
                 .AddXmlSerializerFormatters();
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddSingleton<FileExtensionContentTypeProvider>();
-builder.Services.ConfigureLogger();
-builder.Services.ConfigureRepositories();
-builder.Services.ConfigureDatabaseContext();
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services
+    .AddEndpointsApiExplorer()
+    .AddSwaggerGen()
+    .AddSingleton<FileExtensionContentTypeProvider>()
+    .ConfigureLogger()
+    .ConfigureRepositories()
+    .ConfigureDatabaseContext()
+    .AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer(options =>
     {
