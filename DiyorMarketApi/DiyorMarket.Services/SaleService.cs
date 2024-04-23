@@ -27,10 +27,10 @@ namespace DiyorMarket.Services
             var query = GetFiltrSaleResParameters(saleResourceParameters);
 
             var sales = query.ToPaginatedList(saleResourceParameters.PageSize, saleResourceParameters.PageNumber);
-            
+
             var saleDtos = _mapper.Map<List<SaleDto>>(sales);
 
-            var paginatedResult =  new PaginatedList<SaleDto>(saleDtos, sales.TotalCount, sales.CurrentPage, sales.PageSize);
+            var paginatedResult = new PaginatedList<SaleDto>(saleDtos, sales.TotalCount, sales.CurrentPage, sales.PageSize);
 
             return paginatedResult.ToResponse();
         }
@@ -72,7 +72,7 @@ namespace DiyorMarket.Services
         {
             var saleEntity = _mapper.Map<Sale>(saleToCreate);
 
-            foreach(var saleItem in saleEntity.SaleItems)
+            foreach (var saleItem in saleEntity.SaleItems)
             {
                 var item = _context.Products.FirstOrDefault(x => x.Id == saleItem.ProductId);
 
@@ -120,7 +120,7 @@ namespace DiyorMarket.Services
         {
             var query = _context.Sales
                 .Include(x => x.SaleItems)
-                .ThenInclude(p=>p.Product)
+                .ThenInclude(p => p.Product)
                 .IgnoreAutoIncludes()
                 .AsQueryable();
 
