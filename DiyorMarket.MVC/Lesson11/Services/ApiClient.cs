@@ -5,7 +5,7 @@ namespace Lesson11.Services
 {
     public class ApiClient
     {
-        private const string baseUrl = "https://localhost:7258/api";
+        private const string baseUrl = "https://vzwlsq47-7258.euw.devtunnels.ms/api";
         private readonly HttpClient _client = new();
         private readonly IHttpContextAccessor _contextAccessor;
 
