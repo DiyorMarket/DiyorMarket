@@ -19,5 +19,6 @@ namespace Lesson11.ViewModels
         [Required(ErrorMessage = "This field is required")]
         public string Password { get; set; }
         public string? RepeatPassword { get; set; }
+        public string? Role {  get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Lesson11.Models;
 using Lesson11.Services;
+using Lesson11.ViewModels;
 using Newtonsoft.Json;
 
 namespace Lesson11.Stores.User
@@ -12,7 +13,7 @@ namespace Lesson11.Stores.User
             _apiClient = apiClient;
         }
 
-        public (bool Success, string Token) AuthenticateLogin(UserLogin loginViewModel)
+        public (bool Success, string Token) AuthenticateLogin(LoginViewModel loginViewModel)
         {
             var json = JsonConvert.SerializeObject(loginViewModel);
             var response = _apiClient.Post("auth/login", json);
@@ -23,12 +24,12 @@ namespace Lesson11.Stores.User
             }
 
             var tokenJson = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
-            var token = JsonConvert.DeserializeObject<string>(tokenJson);
+            var userData = JsonConvert.DeserializeObject<UserLogin>(tokenJson);
 
-            return (true, token);
+            return (true, userData.Token);
         }
 
-        public (bool, string) RegisterLogin(UserLogin registerViewModel)
+        public (bool, string) RegisterLogin(RegisterViewModel registerViewModel)
         {
             var json = JsonConvert.SerializeObject(registerViewModel);
             var response = _apiClient.Post("auth/register", json);
@@ -39,8 +40,9 @@ namespace Lesson11.Stores.User
             }
 
             var tokenJson = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+            var userData = JsonConvert.DeserializeObject<UserLogin>(tokenJson);
 
-            return (true, tokenJson);
+            return (true, userData.Token);
         }
 
     }

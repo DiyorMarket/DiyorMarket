@@ -34,10 +34,10 @@ namespace Lesson11.Controllers
                 return View(loginViewModel);
             }
 
-            var user = new UserLogin
+            var user = new LoginViewModel
             {
-                Password = loginViewModel.Password,
                 Login = loginViewModel.Login,
+                Password = loginViewModel.Password,
             };
 
             var (success, token) = _userDataStore.AuthenticateLogin(user);
@@ -80,12 +80,13 @@ namespace Lesson11.Controllers
                 return BadRequest("The password does not match.");
             }
 
-            var user = new UserLogin
+            var user = new RegisterViewModel
             {
                 Login = registerViewModel.Login,
                 Password = registerViewModel.Password,
                 FullName = registerViewModel.FullName,
-                Phone = registerViewModel.Phone
+                Phone = registerViewModel.Phone,
+                Role = "Manager"
             };
 
             if (!_userDataStore.RegisterLogin(user).Item1)
