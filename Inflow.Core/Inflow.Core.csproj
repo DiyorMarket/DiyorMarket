@@ -2,6 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Company>Inflow.Core</Company>
+    <Product>Inflow.Core</Product>
+    <Authors>Inflow.Core</Authors>
+    <PackageId>Inflow.Core</PackageId>
+    <IsPackable>true</IsPackable>
   </PropertyGroup>
 
 </Project>
