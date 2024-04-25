@@ -8,7 +8,7 @@ namespace DiyorMarket.Services
     {
         public async Task<bool> SendEmail(string email, string subject, string massege)
         {
-            MailAddress fromAddress = new MailAddress("gieosovazamat@gmail.com", "Azamat");
+            MailAddress fromAddress = new MailAddress("gieosovazamat@gmail.com", "Inflow Market");
             MailAddress toAddress = new MailAddress(email);
             MailMessage mailMessage = new MailMessage(fromAddress, toAddress);
             mailMessage.Body = massege;
