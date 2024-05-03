@@ -121,9 +121,13 @@ namespace Lesson11.Stores.Sales
             }
         }
 
-        public Stream GetExportFile()
+        public Stream GetExportFile(string type)
         {
-            var response = _api.Get("sales/export");
+            string url = type == "pdf" ?
+                "sales/export/pdf" :
+                "sales/export/xls";
+
+            var response = _api.Get(url);
             var stream = response.Content.ReadAsStream();
 
             return stream;

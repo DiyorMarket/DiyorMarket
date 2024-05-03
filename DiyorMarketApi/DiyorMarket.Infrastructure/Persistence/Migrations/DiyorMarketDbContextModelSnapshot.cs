@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace DiyorMarket.Infrastructure.Persistensce.Migrations
+namespace DiyorMarket.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(DiyorMarketDbContext))]
     partial class DiyorMarketDbContextModelSnapshot : ModelSnapshot

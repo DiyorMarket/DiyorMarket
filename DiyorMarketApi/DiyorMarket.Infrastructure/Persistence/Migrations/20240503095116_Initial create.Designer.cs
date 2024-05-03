@@ -9,10 +9,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace DiyorMarket.Infrastructure.Persistensce.Migrations
+namespace DiyorMarket.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(DiyorMarketDbContext))]
-    [Migration("20240419140157_Initial create")]
+    [Migration("20240503095116_Initial create")]
     partial class Initialcreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

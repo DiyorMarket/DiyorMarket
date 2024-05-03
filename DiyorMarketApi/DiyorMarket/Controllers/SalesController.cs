@@ -1,12 +1,11 @@
 ﻿using ClosedXML.Excel;
-using DiyorMarket.Domain.DTOs.Product;
 using DiyorMarket.Domain.DTOs.Sale;
 using DiyorMarket.Domain.Interfaces.Services;
 using DiyorMarket.Domain.ResourceParameters;
-using DiyorMarket.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
+using Syncfusion.Pdf;
+using Syncfusion.Drawing;
+using Syncfusion.Pdf.Grid;
 using System.Data;
 
 namespace DiyorMarket.Controllers
@@ -33,33 +32,40 @@ namespace DiyorMarket.Controllers
             return Ok(sales);
         }
 
-        [HttpGet("export")]
-        public ActionResult ExportSales()
+        [HttpGet("export/xls")]
+        public ActionResult ExportProducts()
         {
-            var category = _saleService.GetAllSales();
+            var sales = _saleService.GetAllSales();
+            byte[] data = GenerateExcle(sales);
 
-            using XLWorkbook wb = new XLWorkbook();
-            var sheet1 = wb.AddWorksheet(GetSalesDataTable(category), "Sales");
+            return File(data, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Sales.xls");
+        }
 
-            sheet1.Column(1).Style.Font.FontColor = XLColor.Red;
+        [HttpGet("export/pdf")]
+        public IActionResult CreatePDFDocument()
+        {
+            PdfDocument document = new PdfDocument();
+            PdfPage page = document.Pages.Add();
 
-            sheet1.Columns(2, 4).Style.Font.FontColor = XLColor.Blue;
+            PdfGrid pdfGrid = new PdfGrid();
+            var sales = _saleService.GetAllSales();
 
-            sheet1.Row(1).CellsUsed().Style.Fill.BackgroundColor = XLColor.Black;
-            //sheet1.Row(1).Cells(1,3).Style.Fill.BackgroundColor = XLColor.Yellow;
-            sheet1.Row(1).Style.Font.FontColor = XLColor.White;
+            List<object> data = ConvertCategoriesToData(sales);
 
-            sheet1.Row(1).Style.Font.Bold = true;
-            sheet1.Row(1).Style.Font.Shadow = true;
-            sheet1.Row(1).Style.Font.Underline = XLFontUnderlineValues.Single;
-            sheet1.Row(1).Style.Font.VerticalAlignment = XLFontVerticalTextAlignmentValues.Superscript;
-            sheet1.Row(1).Style.Font.Italic = true;
+            pdfGrid.DataSource = data;
 
-            sheet1.Rows(2, 3).Style.Font.FontColor = XLColor.AshGrey;
+            pdfGrid.ApplyBuiltinStyle(PdfGridBuiltinStyle.GridTable4Accent1);
 
-            using MemoryStream ms = new MemoryStream();
-            wb.SaveAs(ms);
-            return File(ms.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Sales.xlsx");
+            pdfGrid.Draw(page, new PointF(15, 15));
+
+            MemoryStream stream = new MemoryStream();
+            document.Save(stream);
+            stream.Position = 0;
+
+            string contentType = "application/pdf";
+            string fileName = "Sales.pdf";
+
+            return File(stream, contentType, fileName);
         }
 
         [HttpGet("CustomersSale/{customersId}")]
@@ -113,9 +119,12 @@ namespace DiyorMarket.Controllers
             return NoContent();
         }
 
-        private DataTable GetSalesDataTable(IEnumerable<SaleDto> saleDtos)
+        private static DataTable GetSalesDataTable(IEnumerable<SaleDto> saleDtos)
         {
-            DataTable table = new DataTable();
+            DataTable table = new DataTable()
+            {
+                TableName = "Sales"
+            };
             table.TableName = "Sales Data";
             table.Columns.Add("Id", typeof(int));
             table.Columns.Add("SaleDate", typeof(DateTime));
@@ -131,6 +140,44 @@ namespace DiyorMarket.Controllers
             }
 
             return table;
+        }
+        private static byte[] GenerateExcle(IEnumerable<SaleDto> salesDto)
+        {
+            using XLWorkbook wb = new();
+            var sheet1 = wb.AddWorksheet(GetSalesDataTable(salesDto), "Sales");
+
+            sheet1.Column(1).Style.Font.FontColor = XLColor.Red;
+
+            sheet1.Columns(2, 4).Style.Font.FontColor = XLColor.Blue;
+
+            sheet1.Row(1).CellsUsed().Style.Fill.BackgroundColor = XLColor.Black;
+            //sheet1.Row(1).Cells(1,3).Style.Fill.BackgroundColor = XLColor.Yellow;
+            sheet1.Row(1).Style.Font.FontColor = XLColor.White;
+
+            sheet1.Row(1).Style.Font.Bold = true;
+            sheet1.Row(1).Style.Font.Shadow = true;
+            sheet1.Row(1).Style.Font.Underline = XLFontUnderlineValues.Single;
+            sheet1.Row(1).Style.Font.VerticalAlignment = XLFontVerticalTextAlignmentValues.Superscript;
+            sheet1.Row(1).Style.Font.Italic = true;
+
+            sheet1.Rows(2, 3).Style.Font.FontColor = XLColor.AshGrey;
+
+            using MemoryStream ms = new MemoryStream();
+            wb.SaveAs(ms);
+
+            return ms.ToArray();
+        }
+
+        private List<object> ConvertCategoriesToData(IEnumerable<SaleDto> sales)
+        {
+            List<object> data = new List<object>();
+
+            foreach (var sale in sales)
+            {
+                data.Add(new { ID = sale.Id, sale.SaleDate, sale.TotalDue, sale.CustomerId });
+            }
+
+            return data;
         }
     }
 }

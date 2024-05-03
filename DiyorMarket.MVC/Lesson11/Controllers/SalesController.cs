@@ -130,23 +130,18 @@ namespace Lesson11.Controllers
             return View();
         }
 
-        public IActionResult DownloadXML()
+        public IActionResult Download(string type)
         {
-            var result = _saleDataStore.GetExportFile();
+            var result = _saleDataStore.GetExportFile(type);
+            (string format, string fileName) = GetFileDetails(type);
 
-            return File(result, "application/xls", "Sales.xls");
-        }
-        public IActionResult DownloadPDF()
-        {
-            var result = _saleDataStore.GetExportFile();
-
-            return File(result, "application/pdf", "Sales.pdf");
+            return File(result, format, fileName);
         }
 
 
         public IActionResult Edit(int id)
         {
-            var sale = _saleDataStore.GetSale(id);
+            var sale = _saleDataStore.GetSale(id) ?? new Sale();
             var customers = GetAllCustomers(null);
             ViewBag.Customers = customers;
             sale.Customer = customers.FirstOrDefault(x => x.Id == sale.CustomerId);
@@ -158,8 +153,8 @@ namespace Lesson11.Controllers
         {
             if (customerId == 0)
             {
-                var sale = _saleDataStore.GetSale(id);
-                customerId = sale.Customer.Id ?? customerId;
+                var sale = _saleDataStore.GetSale(id) ?? new Sale();
+                customerId = sale.CustomerId;
             }
             _saleDataStore.UpdateSale(new Sale
             {
@@ -218,6 +213,24 @@ namespace Lesson11.Controllers
             }
 
             return categories;
+        }
+
+        private static (string Format, string Name) GetFileDetails(string type)
+        {
+            string format = type switch
+            {
+                "xls" => "application/xls",
+                "pdf" => "application/pdf",
+                _ => "application/xls"
+            };
+            string name = type switch
+            {
+                "xls" => "Sales.xls",
+                "pdf" => "Sales.pdf",
+                _ => "Sales.xls"
+            };
+
+            return (format, name);
         }
     }
 }

@@ -106,9 +106,13 @@ namespace Lesson11.Stores.Supplies
             }
         }
 
-        public Stream GetExportFile()
+        public Stream GetExportFile(string type)
         {
-            var response = _api.Get("supplies/export");
+            string url = type == "pdf" ?
+                "supplies/export/pdf" :
+                "supplies/export/xls";
+
+            var response = _api.Get(url);
             var stream = response.Content.ReadAsStream();
 
             return stream;

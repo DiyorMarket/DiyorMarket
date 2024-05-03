@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace DiyorMarket.Infrastructure.Persistensce.Migrations
+namespace DiyorMarket.Infrastructure.Persistence.Migrations
 {
     public partial class Initialcreate : Migration
     {

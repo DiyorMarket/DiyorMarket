@@ -2,8 +2,10 @@
 using DiyorMarket.Domain.DTOs.Supply;
 using DiyorMarket.Domain.Interfaces.Services;
 using DiyorMarket.Domain.ResourceParameters;
-using DiyorMarket.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Mvc;
+using Syncfusion.Drawing;
+using Syncfusion.Pdf;
+using Syncfusion.Pdf.Grid;
 using System.Data;
 
 namespace DiyorMarket.Controllers
@@ -28,33 +30,40 @@ namespace DiyorMarket.Controllers
             return Ok(supplies);
         }
 
-        [HttpGet("export")]
-        public ActionResult ExportSupplies()
+        [HttpGet("export/xls")]
+        public ActionResult ExportProducts()
         {
-            var category = _supplyService.GetAllSupplies();
+            var supplies = _supplyService.GetAllSupplies();
+            byte[] data = GenerateExcle(supplies);
 
-            using XLWorkbook wb = new XLWorkbook();
-            var sheet1 = wb.AddWorksheet(GetSuppliesDataTable(category), "Supplies");
+            return File(data, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Supplies.xls");
+        }
 
-            sheet1.Column(1).Style.Font.FontColor = XLColor.Red;
+        [HttpGet("export/pdf")]
+        public IActionResult CreatePDFDocument()
+        {
+            PdfDocument document = new PdfDocument();
+            PdfPage page = document.Pages.Add();
 
-            sheet1.Columns(2, 4).Style.Font.FontColor = XLColor.Blue;
+            PdfGrid pdfGrid = new PdfGrid();
+            var supplies = _supplyService.GetAllSupplies();
 
-            sheet1.Row(1).CellsUsed().Style.Fill.BackgroundColor = XLColor.Black;
-            //sheet1.Row(1).Cells(1,3).Style.Fill.BackgroundColor = XLColor.Yellow;
-            sheet1.Row(1).Style.Font.FontColor = XLColor.White;
+            List<object> data = ConvertCategoriesToData(supplies);
 
-            sheet1.Row(1).Style.Font.Bold = true;
-            sheet1.Row(1).Style.Font.Shadow = true;
-            sheet1.Row(1).Style.Font.Underline = XLFontUnderlineValues.Single;
-            sheet1.Row(1).Style.Font.VerticalAlignment = XLFontVerticalTextAlignmentValues.Superscript;
-            sheet1.Row(1).Style.Font.Italic = true;
+            pdfGrid.DataSource = data;
 
-            sheet1.Rows(2, 3).Style.Font.FontColor = XLColor.AshGrey;
+            pdfGrid.ApplyBuiltinStyle(PdfGridBuiltinStyle.GridTable4Accent1);
 
-            using MemoryStream ms = new MemoryStream();
-            wb.SaveAs(ms);
-            return File(ms.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Supplies.xlsx");
+            pdfGrid.Draw(page, new PointF(15, 15));
+
+            MemoryStream stream = new MemoryStream();
+            document.Save(stream);
+            stream.Position = 0;
+
+            string contentType = "application/pdf";
+            string fileName = "Supplies.pdf";
+
+            return File(stream, contentType, fileName);
         }
 
         [HttpGet("{id}", Name = "GetSupplyById")]
@@ -100,9 +109,13 @@ namespace DiyorMarket.Controllers
             return NoContent();
         }
 
-        private DataTable GetSuppliesDataTable(IEnumerable<SupplyDto> supplyDtos)
+        private static DataTable GetSuppliesDataTable(IEnumerable<SupplyDto> supplyDtos)
         {
-            DataTable table = new DataTable();
+            DataTable table = new DataTable()
+            {
+                TableName = "Supplies"
+            };
+
             table.TableName = "Supplies Data";
             table.Columns.Add("Id", typeof(int));
             table.Columns.Add("TotalDue", typeof(decimal));
@@ -118,6 +131,45 @@ namespace DiyorMarket.Controllers
             }
 
             return table;
+        }
+
+        private static byte[] GenerateExcle(IEnumerable<SupplyDto> supplyDtos)
+        {
+            using XLWorkbook wb = new();
+            var sheet1 = wb.AddWorksheet(GetSuppliesDataTable(supplyDtos), "Supplies");
+
+            sheet1.Column(1).Style.Font.FontColor = XLColor.Red;
+
+            sheet1.Columns(2, 4).Style.Font.FontColor = XLColor.Blue;
+
+            sheet1.Row(1).CellsUsed().Style.Fill.BackgroundColor = XLColor.Black;
+            //sheet1.Row(1).Cells(1,3).Style.Fill.BackgroundColor = XLColor.Yellow;
+            sheet1.Row(1).Style.Font.FontColor = XLColor.White;
+
+            sheet1.Row(1).Style.Font.Bold = true;
+            sheet1.Row(1).Style.Font.Shadow = true;
+            sheet1.Row(1).Style.Font.Underline = XLFontUnderlineValues.Single;
+            sheet1.Row(1).Style.Font.VerticalAlignment = XLFontVerticalTextAlignmentValues.Superscript;
+            sheet1.Row(1).Style.Font.Italic = true;
+
+            sheet1.Rows(2, 3).Style.Font.FontColor = XLColor.AshGrey;
+
+            using MemoryStream ms = new MemoryStream();
+            wb.SaveAs(ms);
+
+            return ms.ToArray();
+        }
+
+        private List<object> ConvertCategoriesToData(IEnumerable<SupplyDto> supplies)
+        {
+            List<object> data = new List<object>();
+
+            foreach (var supply in supplies)
+            {
+                data.Add(new { ID = supply.Id, supply.SupplyDate, supply.TotalDue, supply.SupplierId });
+            }
+
+            return data;
         }
     }
 }

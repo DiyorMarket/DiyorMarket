@@ -1,7 +1,6 @@
 ﻿using Bogus;
 using DiyorMarket.Domain.Entities;
 using DiyorMarket.Infrastructure.Persistence;
-using Microsoft.EntityFrameworkCore;
 
 namespace DiyorMarket.Extensions
 {
