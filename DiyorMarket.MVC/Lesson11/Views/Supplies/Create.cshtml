@@ -102,35 +102,33 @@
         const grid = document.getElementById("supply-items").ej2_instances[0];
         const items = grid.dataSource;
         const selectedDate = document.getElementById('supply-date').ej2_instances[0].value;
+        const supplierId = document.getElementById('supplier-id').ej2_instances[0].value; // Получение ID поставщика напрямую
         const newSupply = {
-            SupplyItems: items,
             Date: selectedDate,
-            supplierId: $("#supplier-id").val()
+            SupplierId: supplierId,
+            SupplyItems: items
         };
         console.log(newSupply);
-        $.ajax
-            ({
-                url: '@Url.Action("Create", "Supplies")',
-                type: 'POST',
-                data: JSON.stringify(newSupply), //
-                contentType: "application/json",
-                dataType: 'JSON',
-                success: function (data) {
-                    document.getElementById('targetButton').onclick = function () {
-                        const dialog = document.getElementById("dialog").ej2_instances[0];
-                        dialog.show();
-                    }
-                },
-                error: function(data) {
-                    alert('There was an error saving creating new supply! Please, try again.');
-                }
-            });
+        $.ajax({
+            url: '@Url.Action("Create", "Supplies")',
+            type: 'POST',
+            data: JSON.stringify(newSupply),
+            contentType: "application/json",
+            success: function (response) {
+                console.log('success: ');
+                console.log(response);
+                window.location.href = response.redirectToUrl;
+            },
+            error: function (data) {
+                alert('There was an error saving creating new supply! Please, try again.');
+            }
+        });
     }
+
 
     document.addEventListener('DOMContentLoaded', function () {
         const options = {
             rules: {
-                //must specify the name attribute value in rules section
                 'datevalue': { required: true }
             },
             customPlacement: (inputElement, errorElement) => {
@@ -140,7 +138,7 @@
                 inputElement.parentElement.parentElement.appendChild(errorElement);
             }
         };
-        const formObject = new ej.inputs.FormValidator('#form-element', options);
+        const formObject = new ej.inputs.FormValidator('#supply-date', options);
     });
 
     function dlgButtonClick() {

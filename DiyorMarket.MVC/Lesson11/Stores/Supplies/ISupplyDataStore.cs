@@ -8,8 +8,8 @@ namespace Lesson11.Stores.Supplies
         public GetSupplyResponse? GetSupplies(string? searchString, int? supplierId, int pageNumber, DateTime? supplyDate);
         public Supply? GetSupply(int id);
         public Stream GetExportFile();
-        public Supply? CreateSupply(Supply category);
-        public Supply? UpdateSupply(Supply category);
+        public Supply? CreateSupply(Supply supply);
+        public Supply? UpdateSupply(Supply supply);
         public void DeleteSupply(int id);
     }
 }

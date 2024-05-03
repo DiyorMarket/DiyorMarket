@@ -90,10 +90,11 @@ namespace Lesson11.Controllers
                 SupplierId = supplyViewModel.SupplierId,
                 SupplyItems = supplyViewModel.SupplyItems
             };
-            _supplyDataStore.CreateSupply(supply);
-            
-            return RedirectToAction("Details", new { id = supply.Id });
+            var newSupply = _supplyDataStore.CreateSupply(supply);
+
+            return Json(new { redirectToUrl = Url.Action("Details", "Supplies", new { id = newSupply.Id }) });
         }
+
 
         public IActionResult Details(int id)
         {

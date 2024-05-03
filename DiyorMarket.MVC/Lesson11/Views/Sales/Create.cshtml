@@ -29,7 +29,7 @@
             </ejs-combobox>
         </div>
     </form>
-    <div class="d-flex justify-content-start gap-5 mt-3 mb-3">
+    <form class="d-flex justify-content-start gap-5 mt-3 mb-3">
         <div style="width: 310px">
             <ejs-combobox id="products-list" autofill="true" dataSource="@ViewBag.Products" change="onSelectedProductChanged" placeholder="Select a product" popupHeight="230px" style="color: white;">
                 <e-combobox-fields text="Name" value="Id"></e-combobox-fields>
@@ -41,12 +41,14 @@
         <div>
             <ejs-numerictextbox id="item-price" format="c2" floatLabelType="Auto"></ejs-numerictextbox>
         </div>
-    </div>
-    <div class="d-flex flex-row-reverse">
-        <button class="btn btn-outline-success mr-auto" type="button" id="addItem">
-            <i class="fa fa-plus"></i> Add
-            </b>
-    </div>
+        <div>
+            <button class="btn btn-outline-success mr-auto" type="button" id="addItem">
+                <i class="fa fa-plus"></i> Add
+                </b>
+        </div>
+    </form>
+        
+    
 
     <div class="form-group">
         <ejs-grid id="sale-items" asp-for="Sale.SaleItems" toolbar="@(new List<string>() { "Edit", "Delete" })">
@@ -95,41 +97,40 @@
         grid.refresh();
     };
 
-    // submit supply
+    // submit sale
     document.getElementById('create').onclick = function () {
         const grid = document.getElementById("sale-items").ej2_instances[0];
         const items = grid.dataSource;
         const selectedDate = document.getElementById('sale-date').ej2_instances[0].value;
-        const newSupply = {
-            SaleItems: items,
+        const customerId = document.getElementById('customers-id').ej2_instances[0].value;
+        const newSale = {
             Date: selectedDate,
-            CustomerId: $("#customers-id").val()
+            CustomerId: customerId,
+            SaleItems: items
         };
-        console.log(newSupply);
-        $.ajax
-            ({
-                url: '@Url.Action("Create", "Sales")',
-                type: 'POST',
-                data: JSON.stringify(newSupply),
-                contentType: "application/json",
-                dataType: 'JSON',
-                success: function (response) {
-                    console.log('success: ');
-                    console.log(response);
-                    window.location.href = response.redirectToUrl;
-                },
-                error: function (data) {
-                    console.log(error);
-                    console.log(data);
-                    alert('There was an error saving creating new supply! Please, try again.');
-                }
-            });
+        console.log(newSale);
+        $.ajax({
+            url: '@Url.Action("Create", "Sales")',
+            type: 'POST',
+            data: JSON.stringify(newSale),
+            contentType: "application/json",
+            success: function (response) {
+                console.log('success: ');
+                console.log(response);
+                window.location.href = response.redirectToUrl;
+            },
+            error: function (data) {
+                console.log('error: ');
+                console.log(data);
+                alert('There was an error saving creating new sale! Please, try again.');
+            }
+        });
     }
+
 
     document.addEventListener('DOMContentLoaded', function () {
         const options = {
             rules: {
-                //must specify the name attribute value in rules section
                 'datevalue': { required: true }
             },
             customPlacement: (inputElement, errorElement) => {
